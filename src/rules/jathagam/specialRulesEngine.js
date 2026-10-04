@@ -50,6 +50,9 @@ export function evaluateSpecialMarriageRules(bride, groom) {
   let g8thHouseRasi = gLagna + 7;
   if (g8thHouseRasi > 12) g8thHouseRasi -= 12;
 
+  const b8thRasiInfo = getRasiById(b8thHouseRasi);
+  const g8thRasiInfo = getRasiById(g8thHouseRasi);
+
   // Helper function for 8th House Planetary Yoni Compatibility Rule
   const checkPlanetaryYoniMatch = (l1Id, r1Id, l2Id, r2Id) => {
     if (l1Id === 1) return [4, 6].includes(l2Id); // Sun -> Budhan, Sukran
