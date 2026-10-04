@@ -130,10 +130,16 @@ export function evaluateSpecialMarriageRules(bride, groom) {
   }
 
   const isGroom3rdLordInRestrictedStar = RESTRICTED_STARS.includes(g3rdLordStarId);
-  const isBrideInRestrictedStar = RESTRICTED_STARS.includes(bNakId);
+  
+  // Check if both are in the EXACT SAME planetary star lord (e.g. Both Budhan-Budhan, Both Sani-Sani, Both Ketu-Ketu)
+  const isSamePlanetarySaram = isGroom3rdLordInRestrictedStar && (
+    (BUDHAN_STARS.includes(g3rdLordStarId) && BUDHAN_STARS.includes(bNakId)) ||
+    (SANI_STARS.includes(g3rdLordStarId) && SANI_STARS.includes(bNakId)) ||
+    (KETU_STARS.includes(g3rdLordStarId) && KETU_STARS.includes(bNakId))
+  );
 
-  // If groom 3rd lord is in Budhan/Sani/Ketu star, but Bride is NOT in Budhan/Sani/Ketu star -> GOOD!
-  const isNeutralizedAndGood = isGroom3rdLordInRestrictedStar && !isBrideInRestrictedStar;
+  // If groom 3rd lord is in Budhan/Sani/Ketu star, but Bride is NOT in the exact same planetary star -> NEUTRALIZED & GOOD!
+  const isNeutralizedAndGood = isGroom3rdLordInRestrictedStar && !isSamePlanetarySaram;
   const isDirectGood = !isGroom3rdLordInRestrictedStar;
   const isOverallGood = isDirectGood || isNeutralizedAndGood;
 
@@ -191,19 +197,19 @@ export function evaluateSpecialMarriageRules(bride, groom) {
       g3rdLordStarName,
       g3rdLordStarLord,
       isGroom3rdLordInRestrictedStar,
-      isBrideInRestrictedStar,
+      isSamePlanetarySaram,
       isNeutralizedAndGood,
       isOverallGood,
       explanationTa: isDirectGood
         ? `✅ ஆணின் 3-ம் அதிபதி (${g3rdLordName}) புதன், சனி, கேது அல்லாத சுப சாரத்தில் உள்ளார் (உத்தம பொருத்தம்).`
         : isNeutralizedAndGood
-        ? `✅ ஆணின் 3-ம் அதிபதி (${g3rdLordName}) புதன்/சனி/கேது சாரத்தில் அமைந்தாலும், பெண்ணின் நட்சத்திர சாரம் அதே சாரத்தில் இல்லாததால் தோஷம் நிவர்த்தியாகி உத்தம சுப பலன் தரும்.`
-        : `⚠️ ஆணின் 3-ம் அதிபதியும் பெண்ணின் நட்சத்திரமும் ஒரே புதன்/சனி/கேது சார அமைப்பில் உள்ளதால் 3-ம் பாவக சுப பலன் குறைய வாய்ப்புள்ளது.`,
+        ? `✅ தோஷம் நிவர்த்தி (உத்தம சுப யோகம்)! ஆணின் 3-ம் அதிபதி (${g3rdLordName}) புதன்/சனி/கேது சாரத்தில் அமைந்தாலும், பெண்ணின் நட்சத்திர சாரம் அதே சாரத்தில் இல்லாமல் வேறுபட்டு அமைவதால் (எ.கா: புதன் - சனி/கேது) தோஷம் நிவர்த்தியாகி உத்தம சுப யோகம் தரும்.`
+        : `⚠️ ஒரே நட்சத்திர சார தோஷ எச்சரிக்கை! ஆணின் 3-ம் அதிபதியும் பெண்ணின் நட்சத்திரமும் ஒரே சார அமைப்பில் (எ.கா: இருவருக்கும் புதன்-புதன் / சனி-சனி / கேது-கேது) உள்ளதால் சுப பலன் குறைய வாய்ப்புள்ளது.`,
       explanationEn: isDirectGood
         ? `✅ Groom's 3rd Lord (${g3rdLordName}) is in non-Mercury/Saturn/Ketu star (Auspicious).`
         : isNeutralizedAndGood
-        ? `✅ Groom's 3rd Lord is in Mercury/Saturn/Ketu star, but Bride is NOT in the same star group. Neutralized & Auspicious.`
-        : `⚠️ Both Groom 3rd Lord and Bride share Mercury/Saturn/Ketu star alignment.`
+        ? `✅ Dosha Neutralized (Uttama Subha Yogam)! Groom 3rd Lord is in Budhan/Saturn/Ketu star, but Bride is NOT in the same planetary star. Neutralized & Auspicious.`
+        : `⚠️ Shared Planetary Star Conflict! Both Groom 3rd Lord and Bride share the exact same planetary star lord.`
     }
   };
 }
