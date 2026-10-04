@@ -104,14 +104,14 @@ export function evaluateMudakkuRules(bride, groom) {
   let explanationEn = '';
 
   if (isSameMudakkuLord) {
-    explanationTa = `⚠️ முடக்கு அதிபதி தோஷம்! பெண் (${bMudakku.mudakkuLordTa}) மற்றும் ஆண் (${gMudakku.mudakkuLordTa}) இருவருக்கும் ஒரே முடக்கு அதிபதி வருகிறார். இருவரின் முடக்கு அதிபதியும் ஒன்றாக இருக்கக் கூடாது.`;
-    explanationEn = `⚠️ Same Mudakku Lord conflict! Both share ${bMudakku.mudakkuLordEn} as Mudakku Adhipathi.`;
+    explanationTa = `⚠️ முடக்கு அதிபதி தோஷம் (திருமணம் தவிர்க்கவும்)! பெண் (${bMudakku.mudakkuLordTa}) மற்றும் ஆண் (${gMudakku.mudakkuLordTa}) இருவருக்கும் ஒரே முடக்கு அதிபதி வருகிறது (எ.கா: ஆண் குரு, பெண் குரு). நாடிச் சுவடி சாஸ்திரப்படி இருவருக்கும் ஒரே முடக்கு அதிபதி அமைந்தால் திருமணம் தவிர்க்கப்பட வேண்டும்.`;
+    explanationEn = `⚠️ Same Mudakku Lord Conflict (Avoid Marriage)! Both Bride and Groom share ${bMudakku.mudakkuLordEn} as Mudakku Adhipathi (e.g. Boy Guru & Girl Guru). Traditional Nadi manuscripts strictly advise avoiding marriage.`;
   } else if (is9th10thMudakkuConflict) {
-    explanationTa = `⚠️ முடக்கு பாவ தோஷம்! பெண்ணிற்கு 9-ம் இடம் (${bMudakku.mudakkuRasiNameTa}) அல்லது ஆணிற்கு 10-ம் இடம் (${gMudakku.mudakkuRasiNameTa}) முடக்கு அமைப்பில் உள்ளது.`;
-    explanationEn = `⚠️ 9th/10th House Mudakku obstacle detected.`;
+    explanationTa = `⚠️ முடக்கு பாவ தோஷம்! பெண்ணிற்கு 9-ம் இடம் (${bMudakku.mudakkuRasiNameTa}) அல்லது ஆணிற்கு 10-ம் இடம் (${gMudakku.mudakkuRasiNameTa}) முடக்கு அமைப்பில் உள்ளது. சுவடி சாஸ்திரப்படி சேர்க்கக் கூடாது.`;
+    explanationEn = `⚠️ 9th/10th House Mudakku obstacle detected. Traditional manuscripts advise avoiding marriage.`;
   } else {
-    explanationTa = `✅ முடக்கு அதிபதி பொருத்தம் உத்தமம். பெண்: ${bMudakku.sunStarNameTa} சூரியன் ➔ மூலம் வரை எண்ணி ➔ பூராடத்திலிருந்து வரும் முடக்கு நட்சத்திரம்: ${bMudakku.mudakkuStarNameTa}, ராசி: ${bMudakku.mudakkuRasiNameTa} (அதிபதி: ${bMudakku.mudakkuLordTa}). ஆண்: ${gMudakku.sunStarNameTa} சூரியன் ➔ பூராடத்திலிருந்து வரும் முடக்கு நட்சத்திரம்: ${gMudakku.mudakkuStarNameTa}, ராசி: ${gMudakku.mudakkuRasiNameTa} (அதிபதி: ${gMudakku.mudakkuLordTa}).`;
-    explanationEn = `✅ Safe Mudakku Adhipathi alignment. Bride Mudakku Lord: ${bMudakku.mudakkuLordEn} (${bMudakku.mudakkuRasiNameEn}), Groom Mudakku Lord: ${gMudakku.mudakkuLordEn} (${gMudakku.mudakkuLordEn}).`;
+    explanationTa = `✅ முடக்கு அதிபதி பொருத்தம் உத்தமம். பெண் முடக்கு அதிபதி: ${bMudakku.mudakkuLordTa} (${bMudakku.mudakkuRasiNameTa}), ஆண் முடக்கு அதிபதி: ${gMudakku.mudakkuLordTa} (${gMudakku.mudakkuRasiNameTa}). இருவருக்கும் வெவ்வேறு முடக்கு அதிபதிகள் வந்துள்ளதால் சுபமான அமைப்பாகும்.`;
+    explanationEn = `✅ Safe Mudakku Adhipathi alignment. Bride Mudakku Lord: ${bMudakku.mudakkuLordEn} (${bMudakku.mudakkuRasiNameEn}), Groom Mudakku Lord: ${gMudakku.mudakkuLordEn} (${gMudakku.mudakkuRasiNameEn}). Different Mudakku Lords (Auspicious).`;
   }
 
   return {

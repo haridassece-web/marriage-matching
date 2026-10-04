@@ -3,6 +3,7 @@
 
 import { getNakshatraById } from '../../data/nakshatras';
 import { getRasiById } from '../../data/rasis';
+import { getMudakkuInfo } from './mudakkuRules';
 
 /**
  * Evaluates Progeny, Fertility & Special Astrological Rules
@@ -49,6 +50,54 @@ export function evaluateProgenyAndSpecialRules(bride, groom) {
   const isBrideMarsStar = MARS_MANDATORY_STARS.includes(bNakId);
   const isGroomMarsStar = MARS_MANDATORY_STARS.includes(gNakId);
 
+  // 5. சூரிய நிலை 48 நாட்கள் விதி (Girl DOB Sun Stand vs Boy DOB Sun Stand within 48 days)
+  let brideSunLon = 0;
+  let groomSunLon = 0;
+
+  if (bride.allGrahas) {
+    const bSun = bride.allGrahas.find(g => g.code === 'SUN');
+    if (bSun) brideSunLon = bSun.totalLon;
+  } else if (bride.sunRasiId) {
+    brideSunLon = (bride.sunRasiId - 1) * 30 + 15;
+  }
+
+  if (groom.allGrahas) {
+    const gSun = groom.allGrahas.find(g => g.code === 'SUN');
+    if (gSun) groomSunLon = gSun.totalLon;
+  } else if (groom.sunRasiId) {
+    groomSunLon = (groom.sunRasiId - 1) * 30 + 15;
+  }
+
+  let diffDeg = Math.abs(groomSunLon - brideSunLon) % 360;
+  if (diffDeg > 180) diffDeg = 360 - diffDeg;
+  const sunDiffDays = Math.round(diffDeg / 0.9856);
+  const isSunWithin48Days = sunDiffDays <= 48;
+
+  // 6. 3-ம் அதிபதி 5-ம் இடத்தில் அமர்ந்து 5-ம் இடம் முடக்கு / திதி சூன்யம் / அவயோகி நிலை ஆய்வு (3rd Lord in 5th House Progeny Obstacle Rule)
+  const gMudakkuInfo = getMudakkuInfo(groom);
+  const bMudakkuInfo = getMudakkuInfo(bride);
+
+  // Groom's 3rd Lord in 5th House check
+  let g3rdHouseRasi = gLagna + 2;
+  if (g3rdHouseRasi > 12) g3rdHouseRasi -= 12;
+
+  const g3rdRasiInfo = getRasiById(g3rdHouseRasi);
+  const g3rdLordName = g3rdRasiInfo.lordTa;
+  const g3rdLordId = g3rdRasiInfo.lordId;
+
+  // Check if Groom's 3rd Lord is in 5th House
+  let isGroom3rdLordIn5th = false;
+  if (groom.allGrahas) {
+    const lordCodeMap = { 1: 'SUN', 2: 'MOON', 3: 'MARS', 4: 'MERC', 5: 'JUP', 6: 'VEN', 7: 'SAT' };
+    const g3rdLordGraha = groom.allGrahas.find(g => g.code === lordCodeMap[g3rdLordId]);
+    if (g3rdLordGraha && g3rdLordGraha.rasiId === g5thHouseRasi) {
+      isGroom3rdLordIn5th = true;
+    }
+  }
+
+  const isGroom5thHouseMudakku = g5thHouseRasi === gMudakkuInfo.mudakkuRasiId;
+  const isGroom5thHouseAfflicted = isGroom5thHouseMudakku || (isGroom3rdLordIn5th && isGroom5thHouseMudakku);
+
   return {
     progenyHouses: {
       groom5thRasiName: g5thRasiInfo.nameTa,
@@ -82,6 +131,30 @@ export function evaluateProgenyAndSpecialRules(bride, groom) {
         ? 'மிருகசீரிஷம், சித்திரை, அவிட்டம், அஸ்வினி, மகம், மூலம், திருவாதிரை, சதயம், சுவாதி நட்சத்திரங்களில் பிறந்ததால் செவ்வாய் தோஷ ஆய்வு கட்டாயமாகும்.'
         : 'பொதுவான முறையில் செவ்வாய் தோஷம் ஆய்வு செய்யப்படுகிறது.',
       explanationEn: 'Mandatory Mars star evaluation requirement.'
+    },
+    sunStand48Days: {
+      sunDiffDays,
+      diffDeg: Math.round(diffDeg * 10) / 10,
+      isSunWithin48Days,
+      explanationTa: isSunWithin48Days
+        ? `⚠️ 48 நாட்கள் சூரிய நிலை எச்சரிக்கை! பெண் சூரிய நிலையிலிருந்து ஆண் சூரிய நிலை ${sunDiffDays} நாட்கள் (${Math.round(diffDeg * 10) / 10}°) இடைவெளியில் உள்ளது (48 நாட்களுக்குள்). சுவடி சாஸ்திரப்படி தவிர்க்கப்படுவது உத்தமம்.`
+        : `✅ 48 நாட்கள் சூரிய நிலை உத்தமம்! பெண் மற்றும் ஆண் சூரிய நிலைகளுக்கு இடையே ${sunDiffDays} நாட்கள் (${Math.round(diffDeg * 10) / 10}°) இடைவெளி உள்ளது (48 நாட்களுக்கு மேல்).`,
+      explanationEn: isSunWithin48Days
+        ? `⚠️ Sun Stand 48 Days Rule Alert! Groom's Sun is within ${sunDiffDays} days (${Math.round(diffDeg * 10) / 10}°) of Bride's Sun (<= 48 days). Traditional manuscripts advise avoiding this due to synchronized planetary stress.`
+        : `✅ Sun Stand Gap Auspicious! Gap between Bride & Groom Sun is ${sunDiffDays} days (${Math.round(diffDeg * 10) / 10}°) (> 48 days).`
+    },
+    thirdLord5thHouseAnalysis: {
+      g3rdLordName,
+      g5thRasiName: g5thRasiInfo.nameTa,
+      isGroom3rdLordIn5th,
+      isGroom5thHouseMudakku,
+      isGroom5thHouseAfflicted,
+      explanationTa: isGroom5thHouseAfflicted
+        ? `⚠️ 3-ம் அதிபதி 5-ல் / 5-ம் இடம் முடக்கு தோஷம்! ஆணின் 3-ம் பாவக அதிபதி (${g3rdLordName}) 5-ல் அமர்ந்து அல்லது 5-ம் பாவக இடம் முடக்கு / திதி சூன்ய தோஷம் பெற்றுள்ளதால் குழந்தை பாக்கியத்தில் தாமதம் அல்லது தடை ஏற்படலாம். திருமண முடிவெடுக்கும் முன் திருக்கருகாவூர் கர்ப்பரக்ஷாம்பிகை / கோவில் புத்திர தோஷ பரிகாரங்கள் செய்து நிவர்த்திக்கவும்.`
+        : `✅ ஆணின் 5-ம் இடத்தில் 3-ம் அதிபதி முடக்கு / திதி சூன்யத் தடை இன்றி சுபமாக உள்ளார். புத்திர பாக்கியத் தடைகள் இல்லை.`,
+      explanationEn: isGroom5thHouseAfflicted
+        ? `⚠️ 3rd Lord in 5th House & 5th House Mudakku Obstacle detected! Indicates potential progeny delay. Temple Pariharams (Thirukarugavur / Rameshwaram) recommended before finalizing marriage.`
+        : `✅ 5th house and 3rd Lord alignment auspicious with no Mudakku or Tithi Sunya afflictions.`
     }
   };
 }
