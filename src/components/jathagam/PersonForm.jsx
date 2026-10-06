@@ -84,7 +84,7 @@ export default function PersonForm({ title, person, onChange, colorTheme = 'ambe
             type="text"
             value={person.name}
             onChange={(e) => onChange({ ...person, name: e.target.value })}
-            placeholder={isBride ? 'e.g. பிரியா / Priya' : 'e.g. கார்த்திக் / Karthik'}
+            placeholder=""
             className="w-full bg-slate-900 border border-amber-500/30 focus:border-amber-400 rounded-xl px-3 py-2 text-slate-200 outline-none font-medium transition shadow-inner text-xs"
           />
         </div>

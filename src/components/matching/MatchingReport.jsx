@@ -3,6 +3,7 @@ import RasiChart from '../jathagam/RasiChart';
 import NavamsamChart from '../jathagam/NavamsamChart';
 import { getNakshatraById } from '../../data/nakshatras';
 import { getRasiById } from '../../data/rasis';
+import { calculateCompleteDhasaTimeline } from '../../engine/jathagam/dhasaBukthiEngine';
 import { Printer } from 'lucide-react';
 
 export default function MatchingReport({ matchingData, lang, onPrint }) {
@@ -14,6 +15,20 @@ export default function MatchingReport({ matchingData, lang, onPrint }) {
   const groomRasi = getRasiById(groom.rasiId);
   const brideLagna = getRasiById(bride.lagnaRasiId || bride.rasiId);
   const groomLagna = getRasiById(groom.lagnaRasiId || groom.rasiId);
+
+  const brideTimeline = calculateCompleteDhasaTimeline(
+    bride.dob || '1998-05-15',
+    bride.tob || '07:30',
+    bride.nakshatraId || 1,
+    bride.starProgress || 0
+  );
+
+  const groomTimeline = calculateCompleteDhasaTimeline(
+    groom.dob || '1995-08-20',
+    groom.tob || '10:15',
+    groom.nakshatraId || 1,
+    groom.starProgress || 0
+  );
 
   return (
     <div className="space-y-4">
@@ -99,6 +114,26 @@ export default function MatchingReport({ matchingData, lang, onPrint }) {
                 <td className="border border-slate-300 p-2 font-bold text-amber-900">தசா புக்தி இருப்பு (Dhasa Bukthi)</td>
                 <td className="border border-slate-300 p-2 text-xs font-semibold text-amber-950">{bride.dhasaBalanceTa || 'கேது திசை இருப்பு'}</td>
                 <td className="border border-slate-300 p-2 text-xs font-semibold text-amber-950">{groom.dhasaBalanceTa || 'சுக்ரன் திசை இருப்பு'}</td>
+              </tr>
+              <tr className="bg-emerald-50/40">
+                <td className="border border-slate-300 p-2 font-bold text-emerald-900">1. நடப்பு மகா தசை (Current Major Dasa)</td>
+                <td className="border border-slate-300 p-2 text-xs font-bold text-emerald-950">{brideTimeline.activeSummary.dasa?.lordTa} மகா தசை ({brideTimeline.activeSummary.dasa?.formattedStart} - {brideTimeline.activeSummary.dasa?.formattedEnd})</td>
+                <td className="border border-slate-300 p-2 text-xs font-bold text-emerald-950">{groomTimeline.activeSummary.dasa?.lordTa} மகா தசை ({groomTimeline.activeSummary.dasa?.formattedStart} - {groomTimeline.activeSummary.dasa?.formattedEnd})</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-2 font-semibold text-slate-800">2. நடப்பு புக்தி (Current Bhukti / Puthi)</td>
+                <td className="border border-slate-300 p-2 text-xs font-medium text-slate-900">{brideTimeline.activeSummary.bhukti?.lordTa} புக்தி ({brideTimeline.activeSummary.bhukti?.formattedStart} - {brideTimeline.activeSummary.bhukti?.formattedEnd})</td>
+                <td className="border border-slate-300 p-2 text-xs font-medium text-slate-900">{groomTimeline.activeSummary.bhukti?.lordTa} புக்தி ({groomTimeline.activeSummary.bhukti?.formattedStart} - {groomTimeline.activeSummary.bhukti?.formattedEnd})</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-2 font-semibold text-slate-800">3. நடப்பு அந்தரம் (Current Antharam / Andram)</td>
+                <td className="border border-slate-300 p-2 text-xs font-medium text-slate-900">{brideTimeline.activeSummary.antharam?.lordTa} அந்தரம் ({brideTimeline.activeSummary.antharam?.formattedStart} - {brideTimeline.activeSummary.antharam?.formattedEnd})</td>
+                <td className="border border-slate-300 p-2 text-xs font-medium text-slate-900">{groomTimeline.activeSummary.antharam?.lordTa} அந்தரம் ({groomTimeline.activeSummary.antharam?.formattedStart} - {groomTimeline.activeSummary.antharam?.formattedEnd})</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-2 font-semibold text-slate-800">4. நடப்பு சூட்சுமம் (Current Sookshmam / Sucizam)</td>
+                <td className="border border-slate-300 p-2 text-xs font-medium text-slate-900">{brideTimeline.activeSummary.sookshmam?.lordTa} சூட்சுமம் ({brideTimeline.activeSummary.sookshmam?.formattedStart} - {brideTimeline.activeSummary.sookshmam?.formattedEnd})</td>
+                <td className="border border-slate-300 p-2 text-xs font-medium text-slate-900">{groomTimeline.activeSummary.sookshmam?.lordTa} சூட்சுமம் ({groomTimeline.activeSummary.sookshmam?.formattedStart} - {groomTimeline.activeSummary.sookshmam?.formattedEnd})</td>
               </tr>
             </tbody>
           </table>

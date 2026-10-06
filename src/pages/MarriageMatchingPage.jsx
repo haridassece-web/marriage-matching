@@ -13,10 +13,11 @@ import ProgenyAndSpecialRulesReport from '../components/matching/ProgenyAndSpeci
 import RasiChart from '../components/jathagam/RasiChart';
 import NavamsamChart from '../components/jathagam/NavamsamChart';
 import PlanetaryDegreesTable from '../components/jathagam/PlanetaryDegreesTable';
+import DhasaBukthiReport from '../components/matching/DhasaBukthiReport';
 import MatchingReport from '../components/matching/MatchingReport';
 import { calculateMarriageMatching } from '../engine/matching/marriageMatchingEngine';
 import { calculatePanchangamFromBirthDetails } from '../engine/jathagam/panchangamCalculator';
-import { Sparkles, Printer, FileText, CheckCircle, ShieldAlert, Grid, Award, Baby, Compass } from 'lucide-react';
+import { Sparkles, Printer, FileText, CheckCircle, ShieldAlert, Grid, Award, Baby, Compass, Clock } from 'lucide-react';
 
 export default function MarriageMatchingPage() {
   const [lang, setLang] = useState('ta'); // 'ta' or 'en'
@@ -27,7 +28,7 @@ export default function MarriageMatchingPage() {
 
   // Default initial horoscope state with DOB, TOB & Location
   const [bride, setBride] = useState({
-    name: 'கவிதா (Bride)',
+    name: '',
     dob: '1998-05-15',
     tob: '07:30',
     city: 'Chennai',
@@ -38,7 +39,7 @@ export default function MarriageMatchingPage() {
   });
 
   const [groom, setGroom] = useState({
-    name: 'கார்த்திக் (Groom)',
+    name: '',
     dob: '1995-08-20',
     tob: '10:15',
     city: 'Madurai',
@@ -173,6 +174,18 @@ export default function MarriageMatchingPage() {
             >
               <Baby className="w-4 h-4 text-pink-400" />
               <span>{lang === 'ta' ? '👶 புத்திர பாக்கியம்' : 'Progeny Rules'}</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('DHASA_BUKTHI')}
+              className={`px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
+                activeTab === 'DHASA_BUKTHI'
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 shadow-md font-black'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Clock className="w-4 h-4 text-emerald-400" />
+              <span>{lang === 'ta' ? '⏳ தசா - புத்தி - அந்தரம் - சூட்சுமம்' : 'Dasa Bhukti Antharam Sookshmam'}</span>
             </button>
 
             <button
@@ -318,7 +331,14 @@ export default function MarriageMatchingPage() {
           </div>
         )}
 
-        {/* Tab 7: Printable PDF Report View */}
+        {/* Tab 7: 4-Level Dasa Bhukti Antharam Sookshmam View */}
+        {activeTab === 'DHASA_BUKTHI' && (
+          <div className="animate-fadeIn">
+            <DhasaBukthiReport bride={bride} groom={groom} lang={lang} />
+          </div>
+        )}
+
+        {/* Tab 8: Printable PDF Report View */}
         {activeTab === 'REPORT' && (
           <div className="space-y-4 animate-fadeIn">
             <MatchingReport matchingData={matchingData} lang={lang} onPrint={handlePrint} />

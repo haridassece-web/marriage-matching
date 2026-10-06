@@ -620,6 +620,7 @@ export function calculatePanchangamFromBirthDetails(dob, tob, cityKeyOrName = 't
     nakshatraId: nakshatra.id,
     nakshatraNameTa: nakshatra.name,
     nakshatraNameEn: nakshatra.english,
+    starProgress,
     pada,
     rasiId: moonGraha.rasiId,
     rasiNameTa: rasiObj.nameTa,
