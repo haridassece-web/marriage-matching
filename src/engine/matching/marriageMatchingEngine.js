@@ -5,6 +5,7 @@ import { evaluateKattaPorutham } from '../../rules/jathagam/kattaPoruthamRules';
 import { evaluateMudakkuRules } from '../../rules/jathagam/mudakkuRules';
 import { evaluateSpecialMarriageRules } from '../../rules/jathagam/specialRulesEngine';
 import { evaluateProgenyAndSpecialRules } from '../../rules/jathagam/progenyAndSpecialRulesEngine';
+import { evaluateSaaraamsaVidhigal } from '../../rules/jathagam/saaraamsaVidhigalEngine';
 
 export function calculateMarriageMatching(bride, groom) {
   // 1. 11 Poruthams Engine
@@ -27,14 +28,17 @@ export function calculateMarriageMatching(bride, groom) {
   // 6. Progeny Engine
   const progenyResult = evaluateProgenyAndSpecialRules(bride, groom);
 
+  // 7. திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள் (6 Essence Manuscript Rules Engine)
+  const saaraamsaResult = evaluateSaaraamsaVidhigal(bride, groom);
+
   // ==========================================
   // COMPREHENSIVE OVERALL % CALCULATION ENGINE
   // ==========================================
 
-  // Module 1: 11 Poruthams (Weight: 35%)
+  // Module 1: 11 Poruthams (Weight: 30%)
   const poruthamPercent = (totalPoruthamScore / 11) * 100;
 
-  // Module 2: 9 Marriage Doshas & Sevvai Balance (Weight: 20%)
+  // Module 2: 9 Marriage Doshas & Sevvai Balance (Weight: 15%)
   let doshaPoints = 100;
   if (!dhosams9Analysis.isBalanceMatched) doshaPoints -= 35;
   if (dhosams9Analysis.brideActiveCount !== dhosams9Analysis.groomActiveCount) doshaPoints -= 20;
@@ -49,7 +53,7 @@ export function calculateMarriageMatching(bride, groom) {
   if (mudakkuResult.hasMudakkuConflict) kattaPoints -= 30;
   const kattaPercent = Math.max(0, kattaPoints);
 
-  // Module 4: Special Rules & Family Maturity (Weight: 15%)
+  // Module 4: Special Rules & Family Maturity (Weight: 10%)
   let specialPoints = 100;
   if (specialResult.vainasikaAnalysis.isVainasikaDosham) specialPoints -= 50;
   const avgMaturityScore = (specialResult.maturityAnalysis.brideMaturity.score + specialResult.maturityAnalysis.groomMaturity.score) / 2;
@@ -61,13 +65,17 @@ export function calculateMarriageMatching(bride, groom) {
   if (progenyResult.vainasikaStar.isVainasika22) progenyPoints -= 40;
   const progenyPercent = Math.max(0, progenyPoints);
 
+  // Module 6: சாராம்ச விதிகள் (Weight: 15%)
+  const saaraamsaPercent = saaraamsaResult.scorePercent;
+
   // Weighted Overall Compatibility Percentage (%)
   const overallPercentage = Math.round(
-    (poruthamPercent * 0.35) +
-    (doshaPercent * 0.20) +
+    (poruthamPercent * 0.30) +
+    (doshaPercent * 0.15) +
     (kattaPercent * 0.15) +
-    (specialPercent * 0.15) +
-    (progenyPercent * 0.15)
+    (specialPercent * 0.10) +
+    (progenyPercent * 0.15) +
+    (saaraamsaPercent * 0.15)
   );
 
   // Grade Classification
@@ -79,12 +87,12 @@ export function calculateMarriageMatching(bride, groom) {
   let gradeEn = 'Uttamam - Highly Recommended';
   let badgeColor = 'emerald';
 
-  if (rajjuFailed || vedhaFailed || overallPercentage < 50) {
+  if (rajjuFailed || vedhaFailed || overallPercentage < 50 || saaraamsaResult.criticalCount > 0) {
     grade = 'ADHAMAM';
     gradeTa = 'அதமம் - பொருத்தம் இல்லை (Not Recommended)';
     gradeEn = 'Adhamam - Mismatch / Not Recommended';
     badgeColor = 'rose';
-  } else if (overallPercentage < 70 || !dhosams9Analysis.isBalanceMatched) {
+  } else if (overallPercentage < 70 || !dhosams9Analysis.isBalanceMatched || saaraamsaResult.warningCount > 1) {
     grade = 'MADHYAMAM';
     gradeTa = 'மத்தியமம் - பரிகாரங்களுடன் செய்யலாம் (Moderate Match)';
     gradeEn = 'Madhyamam - Moderate Match (Remedies Advised)';
@@ -101,6 +109,11 @@ export function calculateMarriageMatching(bride, groom) {
   if (mudakkuResult.hasMudakkuConflict) {
     warnings.push({ type: 'MUDAKKU', msgTa: mudakkuResult.explanationTa, msgEn: mudakkuResult.explanationEn });
   }
+  if (saaraamsaResult.criticalCount > 0) {
+    warnings.push({ type: 'SAARAAMSA_CRITICAL', msgTa: `🛑 ${saaraamsaResult.overallStatusTa}`, msgEn: `🛑 ${saaraamsaResult.overallStatusEn}` });
+  } else if (saaraamsaResult.warningCount > 1) {
+    warnings.push({ type: 'SAARAAMSA_WARN', msgTa: `⚠️ ${saaraamsaResult.overallStatusTa}`, msgEn: `⚠️ ${saaraamsaResult.overallStatusEn}` });
+  }
 
   return {
     bride,
@@ -112,6 +125,7 @@ export function calculateMarriageMatching(bride, groom) {
     mudakkuResult,
     specialResult,
     progenyResult,
+    saaraamsaResult,
     summary: {
       totalScore: totalPoruthamScore,
       maxPossibleScore: 11,
@@ -122,7 +136,8 @@ export function calculateMarriageMatching(bride, groom) {
         doshaPercent: Math.round(doshaPercent),
         kattaPercent: Math.round(kattaPercent),
         specialPercent: Math.round(specialPercent),
-        progenyPercent: Math.round(progenyPercent)
+        progenyPercent: Math.round(progenyPercent),
+        saaraamsaPercent: Math.round(saaraamsaPercent)
       },
       grade,
       gradeTa,

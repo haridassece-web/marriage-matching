@@ -54,6 +54,7 @@ export function evaluateKattaPorutham(bride, groom) {
   if (lagnaCount <= 0) lagnaCount += 12;
 
   const isLagnaSashtashtaka = lagnaCount === 6 || lagnaCount === 8;
+  const isLagna1to4 = lagnaCount === 4;
 
   // 3. Eka Lagna / Eka Rasi Caution (ஒரே லக்னம் / ஒரே ராசி)
   const isSameLagna = bLagna === gLagna;
@@ -92,15 +93,20 @@ export function evaluateKattaPorutham(bride, groom) {
     lagnaAlignment: {
       lagnaCount,
       isLagnaSashtashtaka,
+      isLagna1to4,
       isSameLagna,
       isSameRasi,
       explanationTa: isLagnaSashtashtaka
         ? '⚠️ லக்னம் 6-8 (ஷஷ்டாஷ்டக லக்னம்)! தம்பதியரிடையே கருத்து வேறுபாடு மற்றும் பொருளாதார கடன்/சிரமம் ஏற்படலாம்.'
+        : isLagna1to4
+        ? '⚠️ பெண் லக்னத்திற்கு 4-ல் ஆண் லக்னம் (1-4 லக்ன தோஷம்)! சுகஸ்தானத்தில் பாதிப்பு மற்றும் குடும்ப அமைதியின்மை வர வாய்ப்புண்டு.'
         : isSameLagna
         ? 'ℹ️ ஒரே லக்னம்! இருவருக்கும் ஒரே மாதிரியான எண்ணங்கள் இருக்கும். திசா புக்திகள் வேறுபட்டால் மிகவும் நன்று.'
         : '✅ லக்ன பொருத்தம் சுபமான 1, 3, 5, 7, 9, 11 அமைப்பில் உள்ளது (உத்தமம்).',
       explanationEn: isLagnaSashtashtaka
         ? '⚠️ 6-8 Sashtashtaka Lagna placement. Potential for disagreement or financial strain.'
+        : isLagna1to4
+        ? '⚠️ 1-4 Lagna placement (Groom Lagna is 4th from Bride Lagna). May cause domestic disharmony.'
         : isSameLagna
         ? 'ℹ️ Identical Lagna. Synchronized mindset; complementary Dhasa periods recommended.'
         : '✅ Auspicious Lagna alignment (1, 3, 5, 7, 9, 11).'

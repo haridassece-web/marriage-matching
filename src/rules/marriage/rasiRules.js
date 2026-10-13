@@ -34,7 +34,21 @@ export function calculateRasi(bride, groom) {
     ruleApplied = 'Samasaptama (7th house positioning)';
     explanationTa = `பெண் ராசியிலிருந்து ஆண் ராசி 7-வது ராசி (சமசப்தமம்). தம்பதியரிடம் ஈர்ப்பும் நலிவில்லா அன்பும் பெருகும்.`;
     explanationEn = `Groom Rasi is 7th from Bride Rasi (Samasaptama). Promotes deep mutual affection and complementary bonding.`;
-  } else if (count === 3 || count === 11 || count === 4 || count === 10 || count === 5 || count === 9) {
+  } else if (count === 4) {
+    if (sameLordOrFriend) {
+      status = 'PARTIAL';
+      score = 0.5;
+      ruleApplied = '1-4 Rasi Position (With Friendly Lord Exception)';
+      explanationTa = `பெண் ராசியிலிருந்து ஆண் ராசி 4-வது ராசியாக (1-4 அமைப்பு) வருகிறது. சாஸ்திர விதிப்படி பெண் ராசிக்கு 4-ல் ஆண் ராசி வரக்கூடாது (நான்கில் வறுமை/சுகக்குறைவு). ஆனால் ராசி அதிபதிகள் நட்பாக இருப்பதால் ஓரளவு நிவர்த்தி பெறுகிறது.`;
+      explanationEn = `1-4 Rasi placement (Groom is 4th from Bride). Traditional rules advise against 1-4 Rasi due to domestic stress, but friendly lords provide partial mitigation.`;
+    } else {
+      status = 'FAIL';
+      score = 0;
+      ruleApplied = '1-4 Rasi Incompatibility (4th Sign From Bride)';
+      explanationTa = `பெண் ராசியிலிருந்து ஆண் ராசி 4-வது ராசியாக (1-4 அமைப்பு) வருகிறது. சாஸ்திர விதிப்படி "பெண் ராசிக்கு 4-ல் ஆண் ராசி வரக்கூடாது" (நான்கில் வறுமை, மன அமைதியின்மை மற்றும் குடும்ப சுகக்குறைவு).`;
+      explanationEn = `1-4 Rasi conflict (Groom is 4th from Bride). Traditional astrological rule prohibits Groom Rasi being 4th from Bride Rasi due to domestic and financial distress.`;
+    }
+  } else if (count === 3 || count === 11 || count === 10 || count === 5 || count === 9) {
     status = 'PASS';
     score = 1;
     ruleApplied = `Auspicious Rasi position (${count}th count)`;

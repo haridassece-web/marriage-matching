@@ -7,7 +7,7 @@ import { calculateCompleteDhasaTimeline } from '../../engine/jathagam/dhasaBukth
 import { Printer } from 'lucide-react';
 
 export default function MatchingReport({ matchingData, lang, onPrint }) {
-  const { bride, groom, results, doshaAnalysis, summary } = matchingData;
+  const { bride, groom, results, doshaAnalysis, summary, saaraamsaResult } = matchingData;
 
   const brideNak = getNakshatraById(bride.nakshatraId);
   const groomNak = getNakshatraById(groom.nakshatraId);
@@ -223,6 +223,47 @@ export default function MatchingReport({ matchingData, lang, onPrint }) {
             </tbody>
           </table>
         </div>
+
+        {/* Section 5: திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள் (6 Essence Manuscript Rules) */}
+        {saaraamsaResult && (
+          <div className="mb-6">
+            <h2 className="text-sm font-bold text-amber-900 border-b border-amber-300 pb-1 mb-3 uppercase tracking-wider flex items-center justify-between">
+              <span>{lang === 'ta' ? '5. திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள் (ஓலைச்சுவடி சாஸ்திரம்)' : '5. 6 Essence Rules of Marriage Matching (Palm-Leaf Manuscript)'}</span>
+              <span className="text-xs font-mono font-bold text-amber-800">
+                {saaraamsaResult.passedCount} / {saaraamsaResult.totalRules} {lang === 'ta' ? 'சுபம்' : 'Passed'} ({saaraamsaResult.scorePercent}%)
+              </span>
+            </h2>
+            <table className="w-full text-xs border-collapse border border-slate-300">
+              <thead>
+                <tr className="bg-amber-100/60 text-amber-900">
+                  <th className="border border-slate-300 p-1.5 text-center w-8">#</th>
+                  <th className="border border-slate-300 p-1.5 text-left w-1/3">சாராம்ச விதி (Rule & Citation)</th>
+                  <th className="border border-slate-300 p-1.5 text-center w-28">நிலை (Status)</th>
+                  <th className="border border-slate-300 p-1.5 text-left">விளக்கம் & பலன் (Astrological Result)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {saaraamsaResult.rulesList.map((rule) => (
+                  <tr key={rule.ruleNumber} className={rule.ruleNumber % 2 === 0 ? 'bg-slate-50' : 'bg-white'}>
+                    <td className="border border-slate-300 p-1.5 text-center font-bold">{rule.ruleNumber}</td>
+                    <td className="border border-slate-300 p-1.5">
+                      <div className="font-semibold text-slate-900">{lang === 'ta' ? rule.titleTa : rule.titleEn}</div>
+                      <div className="text-[10px] text-amber-800 italic mt-0.5">"{rule.manuscriptQuoteTa}"</div>
+                    </td>
+                    <td className={`border border-slate-300 p-1.5 text-center font-bold text-[10px] ${
+                      rule.status === 'PASS' ? 'text-emerald-700' : rule.status === 'MITIGATED' ? 'text-cyan-700' : 'text-rose-700'
+                    }`}>
+                      {lang === 'ta' ? rule.statusTextTa : rule.statusTextEn}
+                    </td>
+                    <td className="border border-slate-300 p-1.5 text-slate-700 text-[11px] leading-relaxed">
+                      {lang === 'ta' ? rule.explanationTa : rule.explanationEn}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Final Astrologer Verdict & Stamp Box */}
         <div className="border-2 border-amber-700 rounded-xl p-4 bg-amber-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">

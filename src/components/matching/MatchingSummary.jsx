@@ -64,7 +64,7 @@ export default function MatchingSummary({ matchingData, lang }) {
               </h2>
               <p className="text-xs text-slate-300 mt-1 max-w-xl">
                 {isUttamam
-                  ? (lang === 'ta' ? '5 சாஸ்திர பிரிவுகளிலும் (11 பொருத்தம், தோஷங்கள், கட்டப் பொருத்தம், சிறப்பு விதிகள், புத்திர பாக்கியம்) மிகச் சிறந்த சேர்க்கை உள்ளது.' : 'High astrological compatibility across all 5 evaluation modules.')
+                  ? (lang === 'ta' ? '6 சாஸ்திர பிரிவுகளிலும் (11 பொருத்தம், தோஷங்கள், கட்டப் பொருத்தம், சிறப்பு விதிகள், புத்திர பாக்கியம், 6 சாராம்ச விதிகள்) மிகச் சிறந்த சேர்க்கை உள்ளது.' : 'High astrological compatibility across all 6 evaluation modules.')
                   : isMadhyamam
                   ? (lang === 'ta' ? 'மிதமான பொருத்தம் அமைந்தது. சாஸ்திர பரிகாரங்களை மேற்கொண்டு நிச்சயிக்கலாம்.' : 'Moderate overall match percentage. Astrological remedies advised.')
                   : (lang === 'ta' ? 'தோஷ முரண் அல்லது குறைந்த சாஸ்திர புள்ளிகளால் திருமணத்தை தவிர்க்கவும்.' : 'Low compatibility percentage or high-risk dosha present.')
@@ -80,12 +80,12 @@ export default function MatchingSummary({ matchingData, lang }) {
           <div className="flex items-center justify-between text-xs text-amber-300 font-bold border-b border-slate-800 pb-2">
             <span className="flex items-center gap-1.5">
               <Activity className="w-4 h-4 text-amber-400" />
-              {lang === 'ta' ? '5 சாஸ்திர பிரிவுகளின் சதவீத ஒப்பீடு (5 Module Percentage Breakdown):' : '5 Module Percentage Breakdown:'}
+              {lang === 'ta' ? '6 சாஸ்திர பிரிவுகளின் சதவீத ஒப்பீடு (6 Module Breakdown):' : '6 Module Percentage Breakdown:'}
             </span>
             <span className="font-mono text-amber-400 font-black">{overallPercentage}% Overall</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
             {/* 1. 11 Poruthams */}
             <div className="space-y-1 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
               <div className="flex justify-between text-[11px]">
@@ -138,6 +138,17 @@ export default function MatchingSummary({ matchingData, lang }) {
               </div>
               <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
                 <div className="bg-pink-400 h-full transition-all duration-500" style={{ width: `${moduleBreakdown.progenyPercent}%` }} />
+              </div>
+            </div>
+
+            {/* 6. Saaraamsa Vidhigal */}
+            <div className="space-y-1 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+              <div className="flex justify-between text-[11px]">
+                <span className="text-slate-300 font-semibold">{lang === 'ta' ? '6. சாராம்ச விதிகள்' : '6. Essence Rules'}</span>
+                <span className="font-mono font-bold text-cyan-400">{moduleBreakdown.saaraamsaPercent ?? 100}%</span>
+              </div>
+              <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div className="bg-cyan-400 h-full transition-all duration-500" style={{ width: `${moduleBreakdown.saaraamsaPercent ?? 100}%` }} />
               </div>
             </div>
           </div>

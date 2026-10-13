@@ -10,6 +10,7 @@ import ThirumanaDhosamReport from '../components/matching/ThirumanaDhosamReport'
 import KattaPoruthamReport from '../components/matching/KattaPoruthamReport';
 import SpecialRulesReport from '../components/matching/SpecialRulesReport';
 import ProgenyAndSpecialRulesReport from '../components/matching/ProgenyAndSpecialRulesReport';
+import SaaraamsaVidhigalReport from '../components/matching/SaaraamsaVidhigalReport';
 import RasiChart from '../components/jathagam/RasiChart';
 import NavamsamChart from '../components/jathagam/NavamsamChart';
 import PlanetaryDegreesTable from '../components/jathagam/PlanetaryDegreesTable';
@@ -17,7 +18,7 @@ import DhasaBukthiReport from '../components/matching/DhasaBukthiReport';
 import MatchingReport from '../components/matching/MatchingReport';
 import { calculateMarriageMatching } from '../engine/matching/marriageMatchingEngine';
 import { calculatePanchangamFromBirthDetails } from '../engine/jathagam/panchangamCalculator';
-import { Sparkles, Printer, FileText, CheckCircle, ShieldAlert, Grid, Award, Baby, Compass, Clock } from 'lucide-react';
+import { Sparkles, Printer, FileText, CheckCircle, ShieldAlert, Grid, Award, Baby, Compass, Clock, Scroll } from 'lucide-react';
 
 export default function MarriageMatchingPage() {
   const [lang, setLang] = useState('ta'); // 'ta' or 'en'
@@ -177,6 +178,25 @@ export default function MarriageMatchingPage() {
             </button>
 
             <button
+              onClick={() => setActiveTab('SAARAAMSA')}
+              className={`px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
+                activeTab === 'SAARAAMSA'
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 shadow-md font-black'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Scroll className="w-4 h-4 text-cyan-400" />
+              <span>{lang === 'ta' ? '📜 6 சாராம்ச விதிகள்' : '6 Essence Rules'}</span>
+              {matchingData.saaraamsaResult?.criticalCount > 0 ? (
+                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+              ) : matchingData.saaraamsaResult?.warningCount > 0 ? (
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
+              ) : (
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              )}
+            </button>
+
+            <button
               onClick={() => setActiveTab('DHASA_BUKTHI')}
               className={`px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
                 activeTab === 'DHASA_BUKTHI'
@@ -328,6 +348,13 @@ export default function MarriageMatchingPage() {
         {activeTab === 'PROGENY' && (
           <div className="animate-fadeIn">
             <ProgenyAndSpecialRulesReport bride={bride} groom={groom} lang={lang} />
+          </div>
+        )}
+
+        {/* Tab: திருமண பொருத்தத்தின் சாராம்ச விதிகள் (5 Essence Manuscript Rules View) */}
+        {activeTab === 'SAARAAMSA' && (
+          <div className="animate-fadeIn">
+            <SaaraamsaVidhigalReport bride={bride} groom={groom} lang={lang} />
           </div>
         )}
 
