@@ -1,10 +1,10 @@
 import React from 'react';
-import { Sparkles, Download, Globe, Award } from 'lucide-react';
+import { Sparkles, Download, Globe, Award, Sun, Moon } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 
-export default function Header({ lang, setLang, onPrint }) {
+export default function Header({ lang, setLang, onPrint, theme = 'light', setTheme }) {
   return (
-    <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-amber-500/30 shadow-2xl">
+    <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-amber-500/30 shadow-2xl transition-colors">
       <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
         
         {/* Brand Logo & Name */}
@@ -36,6 +36,31 @@ export default function Header({ lang, setLang, onPrint }) {
             <Award className="w-3.5 h-3.5 text-amber-400" />
             <span>{lang === 'ta' ? 'தென்னிந்தியா' : 'South Indian Grid'}</span>
           </span>
+
+          {/* Theme Switcher Toggle (#F1F5F9 Soft Slate Light / Cosmic Dark) */}
+          {setTheme && (
+            <button
+              onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+              className={`px-3 py-1 rounded-full font-bold transition shadow-sm flex items-center gap-1.5 border ${
+                theme === 'light'
+                  ? 'bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200'
+                  : 'bg-slate-800 text-amber-300 border-amber-500/40 hover:bg-slate-700'
+              }`}
+              title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Soft Slate Light Mode (#F1F5F9)'}
+            >
+              {theme === 'light' ? (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-amber-600" />
+                  <span>{lang === 'ta' ? 'வெளிர் (#F1F5F9)' : 'Light (#F1F5F9)'}</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>{lang === 'ta' ? 'இருண்ட' : 'Dark'}</span>
+                </>
+              )}
+            </button>
+          )}
 
           {onPrint && (
             <button

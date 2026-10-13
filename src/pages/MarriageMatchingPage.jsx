@@ -22,6 +22,7 @@ import { Sparkles, Printer, FileText, CheckCircle, ShieldAlert, Grid, Award, Bab
 
 export default function MarriageMatchingPage() {
   const [lang, setLang] = useState('ta'); // 'ta' or 'en'
+  const [theme, setTheme] = useState('light'); // 'light' (#F1F5F9 Soft Slate) or 'dark'
   const [activeTab, setActiveTab] = useState('DASHBOARD'); // DASHBOARD, DHOSAM, KATTA, SPECIAL, PROGENY, CHARTS, REPORT
 
   const initialBridePanchangam = calculatePanchangamFromBirthDetails('1998-05-15', '07:30');
@@ -82,10 +83,10 @@ export default function MarriageMatchingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
+    <div className={`min-h-screen ${theme === 'light' ? 'theme-light bg-[#F1F5F9] text-slate-900' : 'theme-dark bg-slate-950 text-slate-100'} flex flex-col font-sans transition-colors duration-300 selection:bg-amber-500 selection:text-slate-950`}>
       
       {/* Top Header */}
-      <Header lang={lang} setLang={setLang} onPrint={handlePrint} />
+      <Header lang={lang} setLang={setLang} onPrint={handlePrint} theme={theme} setTheme={setTheme} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 space-y-8">
         

@@ -453,7 +453,13 @@ export function calculateCharaKarakas(allGrahas) {
 
 // Main function used by PersonForm, MatchingForm, and Rasi/Navamsam Charts
 export function calculatePanchangamFromBirthDetails(dob, tob, cityKeyOrName = 'tiruvannamalai', customLat = null, customLon = null) {
-  if (!dob) return null;
+  if (!dob || typeof dob !== 'string') return null;
+
+  const parts = dob.split('-').map(Number);
+  if (parts.length < 3 || isNaN(parts[0]) || isNaN(parts[1]) || isNaN(parts[2]) || parts[0] < 1800 || parts[1] < 1 || parts[1] > 12 || parts[2] < 1 || parts[2] > 31) {
+    return null;
+  }
+  const [year, month, day] = parts;
 
   let lat = 12.2253; // Tiruvannamalai default
   let lon = 79.0747;
@@ -469,7 +475,6 @@ export function calculatePanchangamFromBirthDetails(dob, tob, cityKeyOrName = 't
     }
   }
 
-  const [year, month, day] = dob.split('-').map(Number);
   const [hour, minute] = (tob || '12:00').split(':').map(Number);
 
   // Convert IST (UTC+5:30) to UTC

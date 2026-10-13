@@ -2,6 +2,7 @@
  * Vimshottari Dasa - Bhukti - Antharam - Sookshmam Engine
  * High precision 4-level Vimshottari Dasha calculation for Tamil / Vedic Astrology
  */
+import { calculatePanchangamFromBirthDetails } from './panchangamCalculator.js';
 
 export const DASHA_ORDER = [
   { id: 'KETU', lordTa: 'கேது', lordEn: 'Ketu', years: 7, color: '#d97706', symbol: '☋' },
@@ -228,9 +229,24 @@ export function calculateBhuktis(dashaLord, dashaStartMs, targetMs, includeSubLe
 /**
  * Calculate complete 120-year Vimshottari Dasa timeline with Bhuktis, Antharams, & Sookshmams
  */
-export function calculateCompleteDhasaTimeline(dob, tob, nakshatraId = 1, starProgress = 0, targetDate = new Date()) {
+export function calculateCompleteDhasaTimeline(dob, tob, nakshatraId = 1, starProgress = null, targetDate = new Date()) {
   const targetMs = targetDate instanceof Date ? targetDate.getTime() : new Date(targetDate).getTime();
   const birthMs = getBirthTimeMs(dob, tob);
+
+  // If starProgress is not provided, is null/undefined, or is 0 without a matching nakshatra, calculate directly from birth details
+  if ((starProgress === null || starProgress === undefined || (starProgress === 0 && (!nakshatraId || nakshatraId === 1))) && dob) {
+    try {
+      const ephem = calculatePanchangamFromBirthDetails(dob, tob);
+      if (ephem) {
+        if (!nakshatraId || nakshatraId === 1) {
+          nakshatraId = ephem.nakshatraId;
+        }
+        starProgress = ephem.starProgress;
+      }
+    } catch (e) {
+      // fallback
+    }
+  }
 
   // Nakshatra Index (0 to 26) -> Dasa Lord Index (0 to 8)
   const nakIndex = ((nakshatraId - 1) % 27 + 27) % 27;
@@ -241,6 +257,17 @@ export function calculateCompleteDhasaTimeline(dob, tob, nakshatraId = 1, starPr
   const safeProgress = Math.max(0, Math.min(1, starProgress || 0));
   const birthDashaElapsedYears = initialLord.years * safeProgress;
   const birthDashaStartMs = birthMs - (birthDashaElapsedYears * MS_PER_YEAR);
+
+  // Remaining Dasa Balance at Birth
+  const remainingFraction = Math.max(0, 1 - safeProgress);
+  const remainingYearsTotal = initialLord.years * remainingFraction;
+  const remYears = Math.floor(remainingYearsTotal);
+  const remMonthsTotal = (remainingYearsTotal - remYears) * 12;
+  const remMonths = Math.floor(remMonthsTotal);
+  const remDays = Math.floor((remMonthsTotal - remMonths) * 30);
+
+  const birthDasaBalanceTa = `${initialLord.lordTa} மகா தசை இருப்பு: ${remYears} வருடங்கள், ${remMonths} மாதங்கள், ${remDays} நாட்கள்`;
+  const birthDasaBalanceEn = `${initialLord.lordEn} Dasa Balance: ${remYears} yrs, ${remMonths} mos, ${remDays} days`;
 
   const dasas = [];
   let currentMs = birthDashaStartMs;
@@ -267,6 +294,10 @@ export function calculateCompleteDhasaTimeline(dob, tob, nakshatraId = 1, starPr
       color: dLord.color,
       symbol: dLord.symbol,
       totalYears: dLord.years,
+      isBirthDasa: i === 0,
+      birthBalanceTa: i === 0 ? birthDasaBalanceTa : null,
+      birthBalanceEn: i === 0 ? birthDasaBalanceEn : null,
+      birthEndDateFormatted: i === 0 ? formatDate(endMs) : null,
       startMs,
       endMs,
       durationMs,
@@ -297,6 +328,12 @@ export function calculateCompleteDhasaTimeline(dob, tob, nakshatraId = 1, starPr
     targetDateMs: targetMs,
     targetDateFormatted: formatDate(targetMs),
     birthDateFormatted: formatDate(birthMs),
+    birthLord: initialLord,
+    birthDasaBalanceTa,
+    birthDasaBalanceEn,
+    birthDasaEndMs: dasas[0]?.endMs,
+    birthDasaEndFormatted: formatDate(dasas[0]?.endMs),
+    safeProgress,
     dasas,
     activeSummary: {
       dasa: activeDasa,

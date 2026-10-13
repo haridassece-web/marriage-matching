@@ -67,7 +67,7 @@ export function getPersonCurrentDasaBhukti(person) {
   const dob = person.dob || '1998-05-15';
   const tob = person.tob || '07:30';
   const nakshatraId = person.nakshatraId || 1;
-  const starProgress = person.starProgress || 0;
+  const starProgress = person.starProgress ?? null;
 
   const timeline = calculateCompleteDhasaTimeline(dob, tob, nakshatraId, starProgress);
   const activeDasa = timeline?.activeSummary?.dasa;

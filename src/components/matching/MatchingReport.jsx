@@ -20,14 +20,14 @@ export default function MatchingReport({ matchingData, lang, onPrint }) {
     bride.dob || '1998-05-15',
     bride.tob || '07:30',
     bride.nakshatraId || 1,
-    bride.starProgress || 0
+    bride.starProgress ?? null
   );
 
   const groomTimeline = calculateCompleteDhasaTimeline(
     groom.dob || '1995-08-20',
     groom.tob || '10:15',
     groom.nakshatraId || 1,
-    groom.starProgress || 0
+    groom.starProgress ?? null
   );
 
   return (

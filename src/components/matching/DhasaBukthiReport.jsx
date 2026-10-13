@@ -41,10 +41,10 @@ export default function DhasaBukthiReport({ bride, groom, lang = 'ta' }) {
       groom.dob || '1995-08-20',
       groom.tob || '10:15',
       groom.nakshatraId || 1,
-      groom.starProgress || 0,
+      groom.starProgress ?? null,
       targetDate
     );
-  }, [groom, targetDate]);
+  }, [groom.dob, groom.tob, groom.nakshatraId, groom.starProgress, groom.city, targetDate]);
 
   // Calculate timeline for Bride
   const brideTimeline = useMemo(() => {
@@ -52,10 +52,10 @@ export default function DhasaBukthiReport({ bride, groom, lang = 'ta' }) {
       bride.dob || '1998-05-15',
       bride.tob || '07:30',
       bride.nakshatraId || 1,
-      bride.starProgress || 0,
+      bride.starProgress ?? null,
       targetDate
     );
-  }, [bride, targetDate]);
+  }, [bride.dob, bride.tob, bride.nakshatraId, bride.starProgress, bride.city, targetDate]);
 
   const activePerson = selectedProfile === 'bride' ? bride : groom;
   const activeTimeline = selectedProfile === 'bride' ? brideTimeline : groomTimeline;
@@ -262,6 +262,51 @@ export default function DhasaBukthiReport({ bride, groom, lang = 'ta' }) {
         /* SINGLE PROFILE VIEW */
         <div className="space-y-6">
           
+          {/* Birth Dasa Balance Banner */}
+          <div className={`p-4 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl backdrop-blur-md ${
+            selectedProfile === 'bride'
+              ? 'bg-gradient-to-r from-rose-950/70 via-slate-900 to-slate-950 border-rose-500/40'
+              : 'bg-gradient-to-r from-amber-950/70 via-slate-900 to-slate-950 border-amber-500/40'
+          }`}>
+            <div className="flex items-center gap-3">
+              <div className={`p-2.5 rounded-xl text-base font-bold shadow-md ${
+                selectedProfile === 'bride'
+                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+              }`}>
+                ⏳
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[11px] font-bold uppercase tracking-wider ${
+                    selectedProfile === 'bride' ? 'text-rose-300' : 'text-amber-300'
+                  }`}>
+                    {lang === 'ta' ? 'பிறந்த நேர தசா இருப்பு (Birth Dasa Balance)' : 'Birth Dasa Balance at Birth'}
+                  </span>
+                  <span className="text-[10px] text-emerald-400 font-mono px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30">
+                    ✓ 100% Ephemeris
+                  </span>
+                </div>
+                <h4 className="text-sm font-extrabold text-slate-100 mt-0.5">
+                  {activeTimeline.birthDasaBalanceTa || activePerson.dhasaBalanceTa}
+                </h4>
+                <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                  {lang === 'ta'
+                    ? `பிறப்பு தேதி ${activeTimeline.birthDateFormatted} முதல் அடுத்த தசை துவங்கும் ${activeTimeline.birthDasaEndFormatted} வரை`
+                    : `From DOB ${activeTimeline.birthDateFormatted} until Next Dasa starts on ${activeTimeline.birthDasaEndFormatted}`}
+                </p>
+              </div>
+            </div>
+            <div className="flex sm:flex-col items-end justify-between sm:justify-center w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
+                {lang === 'ta' ? 'அடுத்த தசை துவக்கம்' : 'Next Dasa Starts'}
+              </span>
+              <span className="text-xs font-black text-amber-300 font-mono">
+                {activeTimeline.birthDasaEndFormatted}
+              </span>
+            </div>
+          </div>
+
           {/* Active 4-Level Current Status Hero Cards */}
           <CurrentLiveSummaryCard 
             title={`${activePerson.name || (selectedProfile === 'bride' ? 'பெண்' : 'ஆண்')} - ${lang === 'ta' ? 'தற்போதைய 4 நிலைகள்' : 'Current Active 4 Levels'}`}
@@ -320,10 +365,20 @@ export default function DhasaBukthiReport({ bride, groom, lang = 'ta' }) {
                               {dasa.lordTa} {lang === 'ta' ? 'மகா தசை' : 'Major Dasa'} ({dasa.lordEn})
                             </span>
                             {renderStatusBadge(dasa.status)}
+                            {dasa.isBirthDasa && (
+                              <span className="text-[10px] font-bold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/40">
+                                {lang === 'ta' ? 'பிறப்புத் தசை' : 'Birth Dasa'}
+                              </span>
+                            )}
                           </div>
-                          <span className="text-[11px] text-slate-400 font-mono">
-                            {dasa.formattedStart} - {dasa.formattedEnd} ({dasa.durationText})
-                          </span>
+                          <div className="text-[11px] text-slate-400 font-mono flex flex-wrap items-center gap-2 mt-0.5">
+                            <span>{dasa.formattedStart} - {dasa.formattedEnd} ({dasa.durationText})</span>
+                            {dasa.isBirthDasa && (
+                              <span className="text-amber-300 font-bold">
+                                • {lang === 'ta' ? `பிறப்பில் இருப்பு: ${dasa.birthBalanceTa?.split(': ')[1] || ''}` : `Balance at Birth: ${dasa.birthBalanceEn?.split(': ')[1] || ''}`}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
 
@@ -531,7 +586,7 @@ function CurrentLiveSummaryCard({ title, timeline, genderColor = 'amber', lang =
       isRose ? 'border-rose-500/40' : 'border-amber-500/40'
     }`}>
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
         <div className="flex items-center gap-2">
           <div className={`p-1.5 rounded-lg font-bold text-xs ${
             isRose ? 'bg-rose-500/20 text-rose-300' : 'bg-amber-500/20 text-amber-300'
@@ -544,6 +599,33 @@ function CurrentLiveSummaryCard({ title, timeline, genderColor = 'amber', lang =
           <Zap className="w-3 h-3" /> LIVE {timeline.targetDateFormatted}
         </span>
       </div>
+
+      {/* Birth Dasa Balance Card inside Summary */}
+      {timeline.birthDasaBalanceTa && (
+        <div className={`mb-3.5 p-2.5 rounded-xl border text-xs flex flex-wrap items-center justify-between gap-2 shadow-inner ${
+          isRose ? 'bg-rose-950/30 border-rose-500/30 text-rose-200' : 'bg-amber-950/30 border-amber-500/30 text-amber-200'
+        }`}>
+          <div className="flex items-center gap-2">
+            <span className="text-amber-400 text-sm">⏳</span>
+            <div>
+              <span className="text-[10px] text-slate-400 block font-semibold">
+                {lang === 'ta' ? 'ஆரம்ப தசா இருப்பு (Birth Balance):' : 'Birth Dasa Balance:'}
+              </span>
+              <strong className="text-amber-300 text-xs font-bold">
+                {timeline.birthDasaBalanceTa}
+              </strong>
+            </div>
+          </div>
+          <div className="text-right">
+            <span className="text-[10px] text-slate-400 block font-mono">
+              {lang === 'ta' ? 'அடுத்த தசை துவக்கம்:' : 'Next Dasa Starts:'}
+            </span>
+            <span className="text-emerald-400 font-extrabold font-mono text-xs">
+              {timeline.birthDasaEndFormatted}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* 4 Levels Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -7,10 +7,10 @@ export default function PersonForm({ title, person, onChange, colorTheme = 'ambe
   const isBride = colorTheme === 'rose';
   const [panchangam, setPanchangam] = useState(null);
 
-  // Auto calculate Panchangam (Rasi, Lagna, Nakshatra, Yogam, Karanam, Dhasa Bukthi, & All 9 Grahas) from DOB & TOB
+  // Auto calculate Panchangam (Rasi, Lagna, Nakshatra, Yogam, Karanam, Dhasa Bukthi, & All 9 Grahas) from DOB, TOB & City
   useEffect(() => {
     if (person.dob) {
-      const calc = calculatePanchangamFromBirthDetails(person.dob, person.tob || '07:30');
+      const calc = calculatePanchangamFromBirthDetails(person.dob, person.tob || '07:30', person.city);
       if (calc) {
         setPanchangam(calc);
         // Automatically sync calculated astrological specs into person state
@@ -18,6 +18,8 @@ export default function PersonForm({ title, person, onChange, colorTheme = 'ambe
           ...person,
           nakshatraId: calc.nakshatraId,
           nakshatraNameTa: calc.nakshatraNameTa,
+          nakshatraNameEn: calc.nakshatraNameEn,
+          starProgress: calc.starProgress,
           pada: calc.pada,
           rasiId: calc.rasiId,
           rasiNameTa: calc.rasiNameTa,
@@ -29,11 +31,13 @@ export default function PersonForm({ title, person, onChange, colorTheme = 'ambe
           allGrahas: calc.allGrahas,
           yogamNameTa: calc.yogam.nameTa,
           karanamNameTa: calc.karanam.nameTa,
-          dhasaBalanceTa: calc.dhasaBalanceTa
+          dhasaLordObj: calc.dhasaLordObj,
+          dhasaBalanceTa: calc.dhasaBalanceTa,
+          dhasaBalanceEn: calc.dhasaBalanceEn
         });
       }
     }
-  }, [person.dob, person.tob]);
+  }, [person.dob, person.tob, person.city]);
 
   const handleSelectQuickLocation = (loc) => {
     onChange({
