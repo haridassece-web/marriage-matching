@@ -82,7 +82,7 @@ export default function SpecialRulesReport({ bride, groom, lang }) {
           </span>
         </div>
         <div className="text-xs text-amber-200 bg-amber-950/40 border border-amber-500/40 p-3 rounded-xl font-medium leading-relaxed">
-          📜 <strong>{lang === 'ta' ? 'சுவடி சாஸ்திர விதி:' : 'Manuscript Rule:'}</strong> {lang === 'ta' ? 'ஆணின் மூன்றாம் அதிபதி அலிகிரகம் என்று சொல்லக்கூடிய சனி, புதன், கேது நட்சத்திரங்களில் அமர்ந்து, மீண்டும் அந்த கிரகம் அதே நட்சத்திரத்தில் அமர்ந்தால் தோஷம். (வேறுபட்டால் தோஷ நிவர்த்தி).' : 'If groom\'s 3rd lord sits in a star of an Ali planet (Saturn, Mercury, Ketu) and that planet sits again in the same star, it is Dosha; if it differs, it is Dosha Nivarthi.'}
+          📜 <strong>{lang === 'ta' ? 'சுவடி சாஸ்திர விதி:' : 'Manuscript Rule:'}</strong> {lang === 'ta' ? 'ஆணின் மூன்றாம் அதிபதி அலிகிரகம் என்று சொல்லக்கூடிய சனி, புதன், கேது நட்சத்திரங்களில் அமர்ந்து, மீண்டும் அலிகிரகம் என்று சொல்லக்கூடிய (சனி, புதன், கேது) அந்த கிரகம் அதே நட்சத்திரத்தில் அமர்ந்தால் தோஷம். (வேறுபட்டால் தோஷ நிவர்த்தி)' : 'If groom\'s 3rd lord sits in a star of an Ali planet (Saturn, Mercury, Ketu) and that Ali planet (Saturn, Mercury, Ketu) sits again in the same star, it is Dosha. (If it differs, it is Dosha Nivarthi)'}
         </div>
         <p className="text-xs text-slate-300 leading-relaxed bg-slate-900 p-3 rounded-xl border border-slate-800">
           {lang === 'ta' ? thirdLordStarRule?.explanationTa : thirdLordStarRule?.explanationEn}
@@ -341,7 +341,7 @@ export default function SpecialRulesReport({ bride, groom, lang }) {
               <li>👑 <strong>குரு யோனி:</strong> சனி தவிர மற்ற அனைத்து கிரகங்களும் யோனி பொருத்தம் தரும்.</li>
             </ul>
           </li>
-          <li><strong>ஆணின் மூன்றாம் அதிபதி அலிகிரக விதி:</strong> ஆணின் மூன்றாம் அதிபதி அலிகிரகம் என்று சொல்லக்கூடிய சனி, புதன், கேது நட்சத்திரங்களில் அமர்ந்து, மீண்டும் அந்த கிரகம் அதே நட்சத்திரத்தில் அமர்ந்தால் தோஷம் (வேறுபட்டால் தோஷ நிவர்த்தி).</li>
+          <li><strong>ஆணின் மூன்றாம் அதிபதி அலிகிரக விதி:</strong> ஆணின் மூன்றாம் அதிபதி அலிகிரகம் என்று சொல்லக்கூடிய சனி, புதன், கேது நட்சத்திரங்களில் அமர்ந்து, மீண்டும் அலிகிரகம் என்று சொல்லக்கூடிய (சனி, புதன், கேது) அந்த கிரகம் அதே நட்சத்திரத்தில் அமர்ந்தால் தோஷம். (வேறுபட்டால் தோஷ நிவர்த்தி).</li>
           <li><strong>சூரிய நிலை 48 நாட்கள் விலக்கு:</strong> பெண் பிறந்த நாளில் சூரியன் நின்ற இடத்திலிருந்து 48 நாட்களுக்கு முன்னும் 48 நாட்களுக்கு பின்னும் ஆண் சூரியன் அமைந்திருந்தால் (1 1/2 solar months / ~48°), ஒரே காலகட்ட கிரக தோஷத் தாக்கம் ஏற்படும் என்பதால் தவிர்க்கப்பட வேண்டும்.</li>
           <li><strong>22-வது நட்சத்திரம்:</strong> பெண்ணின் நட்சத்திரத்திலிருந்து 22-வது நட்சத்திரம் ஆண் நட்சத்திரமாக வரக்கூடாது (வைநாசிக தோஷம்).</li>
         </ul>
