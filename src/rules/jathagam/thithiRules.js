@@ -55,64 +55,81 @@ export function getPersonTithi(person) {
 
 /**
  * RULE 1:
- * "Boy or Girl- 4,8,14 ththi sarikai kudathu"
- * (4, 8, 14 திதி சரிக்கைக் கூடாது - சதுர்த்தி, அஷ்டமி, சதுர்தசி விலக்கு)
- * Neither boy nor girl should be born in 4 (Chaturthi), 8 (Ashtami), or 14 (Chaturdashi) Tithi.
+ * "Boy or Girl- genmai thithi 4,8,14 ththi sarikai kudathu"
+ * (ஆண் அல்லது பெண் ஜன்ம திதியிலிருந்து 4, 8, 14-வது திதி சரிக்கைக் கூடாது)
+ * Neither from Bride's Janma Tithi to Groom, nor from Groom's Janma Tithi to Bride,
+ * should the Tithi count be 4, 8, or 14 (not for being born in Chaturthi, Ashtami, Chaturdashi).
  */
 export function evaluateRule1_RikthaTithi4_8_14(bride, groom) {
   const bTithi = getPersonTithi(bride);
   const gTithi = getPersonTithi(groom);
 
-  const bIs4_8_14 = [4, 8, 14].includes(bTithi.number);
-  const gIs4_8_14 = [4, 8, 14].includes(gTithi.number);
+  // Count in 15-Tithi cycle (Paksha Tithi count 1..15)
+  let countFromBride = gTithi.number - bTithi.number + 1;
+  if (countFromBride <= 0) countFromBride += 15;
+
+  let countFromGroom = bTithi.number - gTithi.number + 1;
+  if (countFromGroom <= 0) countFromGroom += 15;
+
+  // Count in 30-Tithi lunar cycle (0..29)
+  let countFromBride30 = gTithi.index - bTithi.index + 1;
+  if (countFromBride30 <= 0) countFromBride30 += 30;
+
+  let countFromGroom30 = bTithi.index - gTithi.index + 1;
+  if (countFromGroom30 <= 0) countFromGroom30 += 30;
+
+  const isBrideCountConflict = [4, 8, 14].includes(countFromBride) || [4, 8, 14].includes(countFromBride30);
+  const isGroomCountConflict = [4, 8, 14].includes(countFromGroom) || [4, 8, 14].includes(countFromGroom30);
 
   let status = 'PASS';
-  let statusTextTa = '✅ உத்தமம் (4, 8, 14 திதி இல்லை)';
-  let statusTextEn = '✅ Auspicious (No 4, 8, 14 Tithi Conflict)';
+  let statusTextTa = '✅ உத்தமம் (4, 8, 14 திதி சரிக்கை இல்லை)';
+  let statusTextEn = '✅ Auspicious (No 4, 8, 14 Tithi Sarikkai)';
 
   let explanationTa = '';
   let explanationEn = '';
 
-  if (bIs4_8_14 && gIs4_8_14) {
+  if (isBrideCountConflict && isGroomCountConflict) {
     status = 'CRITICAL';
-    statusTextTa = '🛑 சரிக்கைக் கூடாது (இருவருக்கும் 4, 8, 14 திதி)';
-    statusTextEn = '🛑 NOT MATCH (Both Born in 4, 8, or 14 Tithi)';
-    explanationTa = `🛑 சரிக்கைக் கூடாது (NOT MATCH)! பெண் பிறந்த திதி: ${bTithi.fullNameTa} (#${bTithi.number}); ஆண் பிறந்த திதி: ${gTithi.fullNameTa} (#${gTithi.number}). சுவடி சாஸ்திர விதிப்படி 4 (சதுர்த்தி), 8 (அஷ்டமி), 14 (சதுர்தசி) ஆகிய உக்கிர ரிக்தா திதிகளில் பிறந்த இருவரையும் இணைக்கக் கூடாது (சரிக்கைக் கூடாது). இது இல்லற வாழ்வில் தொடர் போராட்டங்களையும் மனக்கசப்புகளையும் உருவாக்கும்.`;
-    explanationEn = `🛑 NOT MATCH! Both Bride (${bTithi.fullNameEn} #${bTithi.number}) and Groom (${gTithi.fullNameEn} #${gTithi.number}) are born in 4, 8, or 14 Tithis. Traditional Nadi manuscripts strictly forbid this matching.`;
-  } else if (bIs4_8_14) {
+    statusTextTa = '🛑 சரிக்கைக் கூடாது (இருவருக்கும் 4, 8, 14 திதி சரிக்கை)';
+    statusTextEn = '🛑 NOT MATCH (Both Have 4, 8, or 14 Tithi Sarikkai)';
+    explanationTa = `🛑 சரிக்கைக் கூடாது (NOT MATCH)! பெண்ணின் ஜன்ம திதியிலிருந்து (${bTithi.fullNameTa}) ஆணின் திதி ${countFromBride}-வது திதியாகவும், ஆணின் ஜன்ம திதியிலிருந்து (${gTithi.fullNameTa}) பெண்ணின் திதி ${countFromGroom}-வது திதியாகவும் அமைகிறது. சுவடி சாஸ்திர விதிப்படி "Boy or Girl- genmai thithi 4,8,14 ththi sarikai kudathu" (ஜன்ம திதியிலிருந்து 4, 8, 14-வது திதி அமைப்புகள் சரிக்கைக் கூடாது).`;
+    explanationEn = `🛑 NOT MATCH! Tithi count from Bride's Janma Tithi is ${countFromBride}th and from Groom's Janma Tithi is ${countFromGroom}th. Traditional manuscripts strictly forbid matching when count from Janma Tithi is 4th, 8th, or 14th.`;
+  } else if (isBrideCountConflict) {
     status = 'CRITICAL';
-    statusTextTa = `🛑 சரிக்கைக் கூடாது (பெண்ணிற்கு ${bTithi.baseNameTa} திதி)`;
-    statusTextEn = `🛑 NOT MATCH (Bride Born in ${bTithi.baseNameEn} Tithi #${bTithi.number})`;
-    explanationTa = `🛑 சரிக்கைக் கூடாது! பெண் பிறந்த திதி: ${bTithi.fullNameTa} (#${bTithi.number}). சுவடி சாஸ்திரப்படி 4 (சதுர்த்தி), 8 (அஷ்டமி), 14 (சதுர்தசி) ஆகிய திதிகளில் பிறந்த பெண் ஜாதகத்தை திருமணம் சரிக்கைக் கூடாது.`;
-    explanationEn = `🛑 NOT MATCH! Bride is born in ${bTithi.fullNameEn} (Tithi #${bTithi.number}). Classical palm-leaf manuscripts advise against matching when born in 4, 8, or 14 Tithis.`;
-  } else if (gIs4_8_14) {
+    statusTextTa = `🛑 சரிக்கைக் கூடாது (பெண் ஜன்ம திதியிலிருந்து ${countFromBride}-வது திதி)`;
+    statusTextEn = `🛑 NOT MATCH (${countFromBride}th Tithi from Bride Janma Tithi)`;
+    explanationTa = `🛑 சரிக்கைக் கூடாது! பெண்ணின் ஜன்ம திதியிலிருந்து (${bTithi.fullNameTa}) ஆணின் திதி (${gTithi.fullNameTa}) ${countFromBride}-வது திதியாக வருகிறது. சுவடி சாஸ்திர விதிப்படி: "Boy or Girl- genmai thithi 4,8,14 ththi sarikai kudathu" (பெண்ணின் ஜன்ம திதியிலிருந்து 4, 8, 14-வது திதி அமைப்புகள் சரிக்கைக் கூடாது).`;
+    explanationEn = `🛑 NOT MATCH! From Bride's Janma Tithi (${bTithi.fullNameEn}), Groom's Tithi (${gTithi.fullNameEn}) is the ${countFromBride}th Tithi. Manuscripts state 4th, 8th, or 14th Tithi from Janma Tithi must not be matched.`;
+  } else if (isGroomCountConflict) {
     status = 'CRITICAL';
-    statusTextTa = `🛑 சரிக்கைக் கூடாது (ஆணிற்கு ${gTithi.baseNameTa} திதி)`;
-    statusTextEn = `🛑 NOT MATCH (Groom Born in ${gTithi.baseNameEn} Tithi #${gTithi.number})`;
-    explanationTa = `🛑 சரிக்கைக் கூடாது! ஆண் பிறந்த திதி: ${gTithi.fullNameTa} (#${gTithi.number}). சுவடி சாஸ்திரப்படி 4 (சதுர்த்தி), 8 (அஷ்டமி), 14 (சதுர்தசி) ஆகிய திதிகளில் பிறந்த ஆண் ஜாதகத்தை திருமணம் சரிக்கைக் கூடாது.`;
-    explanationEn = `🛑 NOT MATCH! Groom is born in ${gTithi.fullNameEn} (Tithi #${gTithi.number}). Classical palm-leaf manuscripts advise against matching when born in 4, 8, or 14 Tithis.`;
+    statusTextTa = `🛑 சரிக்கைக் கூடாது (ஆண் ஜன்ம திதியிலிருந்து ${countFromGroom}-வது திதி)`;
+    statusTextEn = `🛑 NOT MATCH (${countFromGroom}th Tithi from Groom Janma Tithi)`;
+    explanationTa = `🛑 சரிக்கைக் கூடாது! ஆணின் ஜன்ம திதியிலிருந்து (${gTithi.fullNameTa}) பெண்ணின் திதி (${bTithi.fullNameTa}) ${countFromGroom}-வது திதியாக வருகிறது. சுவடி சாஸ்திர விதிப்படி: "Boy or Girl- genmai thithi 4,8,14 ththi sarikai kudathu" (ஆணின் ஜன்ம திதியிலிருந்து 4, 8, 14-வது திதி அமைப்புகள் சரிக்கைக் கூடாது).`;
+    explanationEn = `🛑 NOT MATCH! From Groom's Janma Tithi (${gTithi.fullNameEn}), Bride's Tithi (${bTithi.fullNameEn}) is the ${countFromGroom}th Tithi. Manuscripts state 4th, 8th, or 14th Tithi from Janma Tithi must not be matched.`;
   } else {
-    explanationTa = `✅ உத்தமம்! பெண் பிறந்த திதி: ${bTithi.fullNameTa} (#${bTithi.number}), ஆண் பிறந்த திதி: ${gTithi.fullNameTa} (#${gTithi.number}). இருவரும் 4 (சதுர்த்தி), 8 (அஷ்டமி), 14 (சதுர்தசி) ஆகிய ரிக்தா திதிகளில் பிறக்கவில்லை. சுவடி சாஸ்திரப்படி சுபமான திதி சேர்க்கையாகும்.`;
-    explanationEn = `✅ Auspicious Alignment! Neither Bride (${bTithi.fullNameEn}) nor Groom (${gTithi.fullNameEn}) is born in 4, 8, or 14 Tithis.`;
+    explanationTa = `✅ உத்தமம்! பெண்ணின் ஜன்ம திதியிலிருந்து (${bTithi.fullNameTa}) ஆணின் திதி ${countFromBride}-வது திதியாகவும், ஆணின் ஜன்ம திதியிலிருந்து (${gTithi.fullNameTa}) பெண்ணின் திதி ${countFromGroom}-வது திதியாகவும் அமைந்துள்ளன. எங்கும் 4, 8, 14-வது திதி சரிக்கை வரவில்லை. சுவடி சாஸ்திரப்படி சுபமான திதி சேர்க்கையாகும்.`;
+    explanationEn = `✅ Auspicious Alignment! Tithi count from Bride's Janma Tithi to Groom is ${countFromBride}th, and from Groom's Janma Tithi to Bride is ${countFromGroom}th. Neither is 4th, 8th, nor 14th, satisfying the manuscript rule.`;
   }
 
   return {
     ruleNumber: 1,
-    ruleCode: 'RIKTHA_TITHI_4_8_14',
-    titleTa: '1. 4, 8, 14 திதி சரிக்கைக் கூடாது விதி (Riktha Tithi Avoidance)',
-    titleEn: '1. Boy or Girl 4, 8, 14 Tithi Avoidance Rule',
-    manuscriptQuoteTa: 'Boy or Girl- 4,8,14 ththi sarikai kudathu (சதுர்த்தி, அஷ்டமி, சதுர்தசி திதிகளில் பிறந்தால் சரிக்கைக் கூடாது)',
+    ruleCode: 'GENMAI_TITHI_4_8_14',
+    titleTa: '1. 4, 8, 14 திதி சரிக்கைக் கூடாது விதி (Janma Tithi 4, 8, 14 Avoidance)',
+    titleEn: '1. Boy or Girl Janma Tithi 4, 8, 14 Avoidance Rule',
+    manuscriptQuoteTa: 'Boy or Girl- genmai thithi 4,8,14 ththi sarikai kudathu (ஆண் அல்லது பெண் ஜன்ம திதியிலிருந்து 4, 8, 14-வது திதி சரிக்கைக் கூடாது)',
     bTithi,
     gTithi,
-    bIs4_8_14,
-    gIs4_8_14,
+    countFromBride,
+    countFromGroom,
+    isBrideCountConflict,
+    isGroomCountConflict,
     status,
     statusTextTa,
     statusTextEn,
     explanationTa,
     explanationEn,
-    remedyTa: (bIs4_8_14 || gIs4_8_14)
-      ? 'சதுர்த்தி திதிக்கு விநாயகர் வழிபாடும், அஷ்டமி திதிக்கு பைரவர் வழிபாடும், சதுர்தசி திதிக்கு நரசிம்மர்/சிவன் வழிபாடும் செய்து பரிகாரம் செய்த பின்பே பரிசீலிக்க வேண்டும்.'
+    remedyTa: (isBrideCountConflict || isGroomCountConflict)
+      ? 'ஜன்ம திதியிலிருந்து 4, 8, 14-வது திதி சரிக்கைக் கூடாது என்பதால் குலதெய்வ வழிபாடு மற்றும் நரசிம்மர்/பைரவர் வழிபாடு செய்வது நலம்.'
       : 'சிறப்பு பரிகாரம் தேவையில்லை.'
   };
 }
