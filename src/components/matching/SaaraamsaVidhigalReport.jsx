@@ -60,8 +60,8 @@ export default function SaaraamsaVidhigalReport({ bride, groom, lang = 'ta' }) {
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               {lang === 'ta' 
-                ? 'சம சப்தம லக்னம், ஒரே ராசி/லக்னம், ஒரே திசை (3,5,7 திசை), பாதகாதிபதி, உபய லக்னம் & 1-4 விலக்கு சுவடி விதிகள்'
-                : 'Sama Saptama Lagna, Same/Odd Signs, Same Dasa (3,5,7 Dasas), Badhaka, Ubhaya Lagna & 1-4 Placement Core Rules'}
+                ? 'சம சப்தம லக்னம், ஒரே ராசி/லக்னம், ஒரே தசா 3,5,7 விலக்கு, பாதகாதிபதி உயிர்ஸ்தானம், உபய லக்னம் & 1-4 விலக்கு சுவடி விதிகள்'
+                : 'Sama Saptama Lagna, Same/Odd Signs, Same 3,5,7 Dasa Avoidance, Badhaka Uyir Sthana, Ubhaya Lagna & 1-4 Placement Core Rules'}
             </p>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function SaaraamsaVidhigalReport({ bride, groom, lang = 'ta' }) {
         </div>
       </div>
 
-      {/* All 5 Individual Rule Cards */}
+      {/* All 6 Individual Rule Cards */}
       <div className="space-y-4 pt-2">
         {rulesList.map((rule, idx) => {
           const isExpanded = expandedRule === idx || rule.status !== 'PASS';
@@ -279,17 +279,25 @@ export default function SaaraamsaVidhigalReport({ bride, groom, lang = 'ta' }) {
                   {rule.ruleNumber === 3 && (
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-[11px]">
                       <div>
-                        <span className="text-slate-400 block">பெண் தசை நிலை:</span>
-                        <strong className="text-rose-300 text-xs">{rule.brideDasaDescTa}</strong>
+                        <span className="text-slate-400 block">பெண் நடப்பு தசா:</span>
+                        <strong className="text-rose-300 text-xs">
+                          {rule.brideDasaLordTa} தசை ({rule.brideDasaName})
+                        </strong>
                       </div>
                       <div>
-                        <span className="text-slate-400 block">ஆண் தசை நிலை:</span>
-                        <strong className="text-amber-300 text-xs">{rule.groomDasaDescTa}</strong>
+                        <span className="text-slate-400 block">ஆண் நடப்பு தசா:</span>
+                        <strong className="text-amber-300 text-xs">
+                          {rule.groomDasaLordTa} தசை ({rule.groomDasaName})
+                        </strong>
                       </div>
                       <div>
-                        <span className="text-slate-400 block">கடகம் - விருச்சிக சேர்க்கை:</span>
-                        <strong className={`${rule.isKadagamViruchigamPair ? 'text-rose-400 font-black' : 'text-emerald-400'} text-xs`}>
-                          {rule.isKadagamViruchigamPair ? '⚠️ கடகம் - விருச்சிக சேர்க்கை (விலக்கு)' : '✅ கடகம் - விருச்சிக விலக்கு இல்லை'}
+                        <span className="text-slate-400 block">ஒரே தசா & 3,5,7 நிலை:</span>
+                        <strong className={`${rule.status === 'CRITICAL' ? 'text-rose-400 font-black' : rule.status === 'WARN' ? 'text-amber-300' : 'text-emerald-400'} text-xs`}>
+                          {rule.status === 'CRITICAL' 
+                            ? (rule.isSameDasa ? '🛑 ஒரே தசா 3, 5, 7 விலக்கு!' : '🛑 இருவருக்கும் 3, 5, 7 தசாக்கள்!')
+                            : rule.status === 'WARN' 
+                            ? '⚠️ ஒரே தசா (சுப தசா)' 
+                            : '✅ உத்தம தசா சமநிலை'}
                         </strong>
                       </div>
                     </div>

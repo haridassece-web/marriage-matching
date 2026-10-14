@@ -293,77 +293,32 @@ export function evaluateRule2_OttraiRasiOttraiLagna(bride, groom) {
 
 /**
  * RULE 3:
- * "இரண்டு பேருக்கும் ஒரே திசை, 3, 5, 7 வது திசை வரக்கூடாது.
- * (உ.தா) பெண் கடகம், ஆண் விருச்சிகம் இது ஆகாது. ஆண் கடகம், பெண் விருச்சிகம் ஆகாது."
- * - Prohibits running the SAME Mahadasa concurrently (ஒரே திசை).
- * - Prohibits running 3rd (Vipat), 5th (Pratyak), or 7th (Naidhana/Vadha) Dasa concurrently.
- * - Classical Manuscript Example: Kadagam (Cancer) & Viruchigam (Scorpio) both share identical
- *   succession of star lords: Guru (Jupiter) -> Sani (Saturn) -> Budhan (Mercury).
- *   Marrying Kadagam with Viruchigam guarantees simultaneous identical/dangerous 3rd, 5th, 7th dasas!
+ * "இரண்டு பேருக்கும் ஒரே தசா 3, 5, 7-வது வரக்கூடாது"
+ * (Both Bride and Groom Should Not Have the Same Dasa as 3rd, 5th, or 7th Dasa)
+ * - 3rd Dasa: Vipat Dasa (விபத்து தசா - Danger / Accident)
+ * - 5th Dasa: Pratyak Dasa (பிரத்யக் தசா - Obstacles / Adverse events)
+ * - 7th Dasa: Naidhana / Vadha Dasa (வதை / மாரக தசா - Extreme affliction / Maraka)
+ * - If both Bride & Groom are running the SAME Dasa AND it is the 3rd, 5th, or 7th Dasa from birth:
+ *   -> CRITICAL PROHIBITION (விலக்கு - சரிக்கைக் கூடாது).
+ * - If both are running their 3rd, 5th, or 7th Dasas concurrently:
+ *   -> CRITICAL PROHIBITION.
+ * - If both are running the same Dasa but it is an auspicious Dasa (e.g. 2nd Sampath, 4th Kshema, 6th Sadhana):
+ *   -> WARNING / Permissible with remedy if Bhuktis differ.
+ * - Otherwise: PASS (Auspicious Dasa harmony).
  */
-export function evaluateRule3_OreThisaiAnd357Thisai(bride, groom) {
-  const bRasi = Number(bride.rasiId || 1);
-  const gRasi = Number(groom.rasiId || 1);
-
+export function evaluateRule3_OreDasa357VaraKoodathu(bride, groom) {
   const bDasaBhukti = getPersonCurrentDasaBhukti(bride);
   const gDasaBhukti = getPersonCurrentDasaBhukti(groom);
 
-  // 1. Same running Dasa check (ஒரே திசை)
-  const isSameDasaActive = bDasaBhukti.dasaId === gDasaBhukti.dasaId;
+  // 1. Same running Dasa check (ஒரே தசா)
+  const isSameDasa = bDasaBhukti.dasaId === gDasaBhukti.dasaId;
 
-  // 2. 3, 5, 7-வது திசை check (Vipat, Pratyak, Naidhana)
+  // 2. 3, 5, 7-வது தசா check (Vipat, Pratyak, Naidhana / Vadha)
   const DASA_357_NUMBERS = [3, 5, 7];
   const isBrideIn357Dasa = DASA_357_NUMBERS.includes(bDasaBhukti.dasaNumberFromBirth);
   const isGroomIn357Dasa = DASA_357_NUMBERS.includes(gDasaBhukti.dasaNumberFromBirth);
   const isBothIn357Dasa = isBrideIn357Dasa && isGroomIn357Dasa;
-
-  // 3. Manuscript classic example check: Kadagam (4) & Viruchigam (8)
-  // Punarvasu 4/Pushya/Aslesha vs Vishakha 4/Anuradha/Jyeshtha -> Shared Guru, Sani, Budhan lords
-  const isKadagamViruchigamPair =
-    (bRasi === 4 && gRasi === 8) ||
-    (bRasi === 8 && gRasi === 4);
-
-  let status = 'PASS';
-  let statusTextTa = '✅ சுபம் (திசா சமநிலை உத்தமம்)';
-  let statusTextEn = '✅ Auspicious Dasa Alignment';
-
-  if (isKadagamViruchigamPair) {
-    status = 'CRITICAL';
-    statusTextTa = '🛑 சுவடி எச்சரிக்கை: கடகம் - விருச்சிக சேர்க்கை ஆகாது';
-    statusTextEn = '🛑 Manuscript Alert: Cancer - Scorpio Avoidance';
-  } else if (isSameDasaActive && (isBrideIn357Dasa || isGroomIn357Dasa)) {
-    status = 'CRITICAL';
-    statusTextTa = '🛑 ஒரே திசை & 3/5/7-வது திசை ஆபத்து';
-    statusTextEn = '🛑 Concurrent Same Dasa & 3/5/7 Danger';
-  } else if (isBothIn357Dasa) {
-    status = 'WARN';
-    statusTextTa = '⚠️ இருவருக்கும் 3, 5, 7-வது விபத்து/பிரத்யக்/வதை திசை';
-    statusTextEn = '⚠️ Both in 3rd/5th/7th Affliction Dasa';
-  } else if (isSameDasaActive) {
-    status = 'WARN';
-    statusTextTa = '⚠️ இருவருக்கும் ஒரே திசை நடக்கிறது (ஏக திசை)';
-    statusTextEn = '⚠️ Shared Same Dasa Period (Eka Dasa)';
-  }
-
-  let explanationTa = '';
-  let explanationEn = '';
-
-  if (isKadagamViruchigamPair) {
-    explanationTa = `🛑 சுவடியின் நேரடி உதாரண எச்சரிக்கை: "(உ.தா) பெண் கடகம், ஆண் விருச்சிகம் இது ஆகாது. ஆண் கடகம், பெண் விருச்சிகம் ஆகாது." கடகம் மற்றும் விருச்சிகம் இரண்டு ராசிகளின் நட்சத்திர அதிபதிகளும் ஒரே வரிசையில் குரு, சனி, புதன் என வருவதால், தம்பதியர் இருவருக்கும் ஒரே நேரத்தில் ஒரே திசைகளும், 3, 5, 7-வது விபத்து/பிரத்யக்/வதை திசைகளும் ஒரே வயதில் வந்து பெரும் பாதிப்பை ஏற்படுத்தும்!`;
-    explanationEn = `🛑 Manuscript Classic Example Warning: "(e.g.) Bride Cancer, Groom Scorpio is forbidden. Groom Cancer, Bride Scorpio is forbidden." Both Cancer and Scorpio share the identical sequence of star lords (Jupiter -> Saturn -> Mercury), causing identical synchronized 3rd, 5th, and 7th crisis dasas at the exact same life stages!`;
-  } else if (isSameDasaActive && (isBrideIn357Dasa || isGroomIn357Dasa)) {
-    explanationTa = `🛑 சுவடி திசா விதி எச்சரிக்கை! தம்பதியர் இருவருக்கும் ஒரே திசை (${bDasaBhukti.dasaLordTa} தசை) நடப்பதோடு, அது ஜாதகரின் 3-வது (விபத்து), 5-வது (பிரத்யக்) அல்லது 7-வது (வதை) திசையாக வருகிறது. ஒரே நேரத்தில் இருவருக்கும் மாரக/கண்ட அழுத்தங்கள் வரக்கூடும்.`;
-    explanationEn = `🛑 Critical Dasa Alert! Both run the identical Dasa (${bDasaBhukti.dasaLordEn}), and it is currently the 3rd (Vipat), 5th (Pratyak), or 7th (Naidhana/Vadha) Dasa from birth, concentrating affliction simultaneously.`;
-  } else if (isBothIn357Dasa) {
-    explanationTa = `⚠️ 3, 5, 7-வது திசை எச்சரிக்கை! பெண் ஜாதகத்தில் ${bDasaBhukti.dasaNumberFromBirth}-வது திசையும் (${bDasaBhukti.dasaLordTa}), ஆண் ஜாதகத்தில் ${gDasaBhukti.dasaNumberFromBirth}-வது திசையும் (${gDasaBhukti.dasaLordTa}) நடக்கின்றன. இருவருக்கும் ஒரே நேரத்தில் சோதனை தரும் 3/5/7-வது திசைகள் அமைவதால் வாழ்க்கையில் சவால்கள் அதிகரிக்கலாம்.`;
-    explanationEn = `⚠️ 3rd/5th/7th Dasa Alert! Bride is running her ${bDasaBhukti.dasaNumberFromBirth}th Dasa (${bDasaBhukti.dasaLordEn}) and Groom is running his ${gDasaBhukti.dasaNumberFromBirth}th Dasa (${gDasaBhukti.dasaLordEn}). Running concurrent transition dasas simultaneously requires protective pariharams.`;
-  } else if (isSameDasaActive) {
-    explanationTa = `⚠️ ஒரே திசை எச்சரிக்கை! இருவருக்கும் ஒரே மகாதசை (${bDasaBhukti.dasaLordTa} தசை) தற்போது நடைபெறுகிறது. சுவடி சாஸ்திரப்படி ஒரே திசை நடக்கும் போது குடும்பத்தில் ஏற்றத்தாழ்வுகள் சமநிலை பெறாமல் போகலாம். புத்தி நிலைகள் வேறுபட்டு இருப்பது ஆறுதல்.`;
-    explanationEn = `⚠️ Shared Dasa Caution! Both are currently undergoing the identical Mahadasa (${bDasaBhukti.dasaLordEn}). Under palm-leaf rules, identical dasa periods may lack complementary stabilizing influences.`;
-  } else {
-    explanationTa = `✅ தசா அமைப்பு மிக உத்தமம்! இருவருக்கும் வேறுபட்ட சுப தசைகள் நடக்கின்றன (பெண்ணிற்கு: ${bDasaBhukti.dasaLordTa} - ${bDasaBhukti.dasaNumberFromBirth}-வது திசை; ஆணிற்கு: ${gDasaBhukti.dasaLordTa} - ${gDasaBhukti.dasaNumberFromBirth}-வது திசை). ஒரே திசை அல்லது ஆபத்தான 3, 5, 7-வது திசா சேர்க்கை இல்லை.`;
-    explanationEn = `✅ Auspicious Dasa Progression! Bride is running ${bDasaBhukti.dasaLordEn} Dasa (#${bDasaBhukti.dasaNumberFromBirth}) and Groom is running ${gDasaBhukti.dasaLordEn} Dasa (#${gDasaBhukti.dasaNumberFromBirth}). No same-dasa or synchronized 3/5/7 afflictions detected.`;
-  }
+  const isAnyIn357Dasa = isBrideIn357Dasa || isGroomIn357Dasa;
 
   const dasaNamesMap = {
     1: '1-வது ஜன்ம திசை (Janma)',
@@ -377,27 +332,61 @@ export function evaluateRule3_OreThisaiAnd357Thisai(bride, groom) {
     9: '9-வது பரம மித்ர திசை (Parama Mitra)'
   };
 
+  const brideDasaName = dasaNamesMap[bDasaBhukti.dasaNumberFromBirth] || `${bDasaBhukti.dasaNumberFromBirth}-வது திசை`;
+  const groomDasaName = dasaNamesMap[gDasaBhukti.dasaNumberFromBirth] || `${gDasaBhukti.dasaNumberFromBirth}-வது திசை`;
+
+  let status = 'PASS';
+  let statusTextTa = '✅ சுபம் (ஒரே தசா 3, 5, 7 விலக்கு இல்லை)';
+  let statusTextEn = '✅ Auspicious (No 3, 5, 7 Same Dasa Conflict)';
+
+  let explanationTa = '';
+  let explanationEn = '';
+
+  if (isSameDasa && isAnyIn357Dasa) {
+    status = 'CRITICAL';
+    statusTextTa = '🛑 விலக்கு: இரண்டு பேருக்கும் ஒரே தசா 3, 5, 7-வது வரக்கூடாது';
+    statusTextEn = '🛑 Forbidden: Same Dasa as 3rd, 5th, or 7th Dasa';
+    explanationTa = `🛑 சுவடி சாஸ்திர விலக்கு விதி: "இரண்டு பேருக்கும் ஒரே தசா 3, 5, 7-வது வரக்கூடாது". இருவருக்கும் ஒரே தசா (${bDasaBhukti.dasaLordTa} தசை) நடைபெறுவதோடு, அது ${isBrideIn357Dasa ? 'பெண்ணிற்கு ' + brideDasaName : ''}${isBothIn357Dasa ? ' மற்றும் ' : ''}${isGroomIn357Dasa ? 'ஆணிற்கு ' + groomDasaName : ''} என அசுப விபத்து/பிரத்யக்/வதை தசையாக வந்துள்ளது. ஒரே நேரத்தில் இருவருக்கும் மாரக அல்லது கண்ட அழுத்தங்கள் எழும் என்பதால் இது கூடவே கூடாது!`;
+    explanationEn = `🛑 Palm-Leaf Prohibition: "Both should not have the same Dasa as 3rd, 5th, or 7th Dasa". Both share the same Mahadasa (${bDasaBhukti.dasaLordEn}) and it constitutes a 3rd (Vipat), 5th (Pratyak), or 7th (Naidhana) affliction dasa (${brideDasaName} / ${groomDasaName}). Concurrent affliction without counterbalance is strictly forbidden.`;
+  } else if (isBothIn357Dasa) {
+    status = 'CRITICAL';
+    statusTextTa = '🛑 எச்சரிக்கை: இருவருக்கும் ஒரே நேரத்தில் 3, 5, 7-வது தசாக்கள்';
+    statusTextEn = '🛑 Alert: Both Running 3rd, 5th, or 7th Dasas Concurrently';
+    explanationTa = `🛑 சுவடி சாஸ்திர எச்சரிக்கை: "இரண்டு பேருக்கும் ஒரே தசா 3, 5, 7-வது வரக்கூடாது". பெண் ஜாதகத்தில் ${brideDasaName} (${bDasaBhukti.dasaLordTa}), ஆண் ஜாதகத்தில் ${groomDasaName} (${gDasaBhukti.dasaLordTa}) என இருவருக்குமே ஒரே நேரத்தில் சோதனை தரும் 3/5/7-வது விபத்து, பிரத்யக் அல்லது வதை தசாக்கள் நடைபெறுகின்றன. இது குடும்ப அமைதியை பாதிக்கும்.`;
+    explanationEn = `🛑 Dasa Alert: Bride is running ${brideDasaName} (${bDasaBhukti.dasaLordEn}) and Groom is running ${groomDasaName} (${gDasaBhukti.dasaLordEn}). Concurrent 3rd/5th/7th adverse transitions affect domestic peace.`;
+  } else if (isSameDasa) {
+    status = 'WARN';
+    statusTextTa = '⚠️ இருவருக்கும் ஒரே தசா நடக்கிறது (ஆயினும் 3, 5, 7 அல்ல)';
+    statusTextEn = '⚠️ Same Dasa Period (Not 3rd, 5th, 7th)';
+    explanationTa = `⚠️ கவனிப்பு: இருவருக்கும் ஒரே மகாதசை (${bDasaBhukti.dasaLordTa} தசை) நடக்கிறது. ஆயினும் இது 3, 5, 7-வது அசுப தசா அல்லாமல் சுப தசையாக (${brideDasaName} / ${groomDasaName}) உள்ளதால் மாரக தோஷம் இல்லை; புத்தி அமைப்புகள் வேறுபட்டு இருந்தால் திருமணம் செய்யலாம்.`;
+    explanationEn = `⚠️ Observation: Both share the same Mahadasa (${bDasaBhukti.dasaLordEn}), but it is not a 3rd, 5th, or 7th inauspicious dasa (${brideDasaName} / ${groomDasaName}). If Bhuktis differ, this is manageable.`;
+  } else {
+    explanationTa = `✅ தசா அமைப்பு உத்தமம்! "இரண்டு பேருக்கும் ஒரே தசா 3, 5, 7-வது வரக்கூடாது" என்ற விதிப்படி, இருவருக்கும் அசுப தசா சேர்க்கை இன்றி சமநிலையான வேறுபட்ட திசைகள் நடைபெறுகின்றன (பெண்ணிற்கு: ${bDasaBhukti.dasaLordTa} - ${brideDasaName}; ஆணிற்கு: ${gDasaBhukti.dasaLordTa} - ${groomDasaName}).`;
+    explanationEn = `✅ Auspicious Dasa Harmony! In accordance with the rule "both should not have the same Dasa as 3rd, 5th, or 7th", both undergo complementary balanced periods (Bride: ${bDasaBhukti.dasaLordEn} - ${brideDasaName}; Groom: ${gDasaBhukti.dasaLordEn} - ${groomDasaName}).`;
+  }
+
   return {
     ruleNumber: 3,
-    titleTa: '3. ஒரே திசை & 3, 5, 7-வது திசை விலக்கு விதி',
-    titleEn: '3. Same Dasa & 3rd, 5th, 7th Dasa Avoidance Rule',
-    manuscriptQuoteTa: 'இரண்டு பேருக்கும் ஒரே திசை, 3, 5, 7 வது திசை வரக்கூடாது. (உ.தா) பெண் கடகம், ஆண் விருச்சிகம் இது ஆகாது. ஆண் கடகம், பெண் விருச்சிகம் ஆகாது.',
-    isSameDasaActive,
+    titleTa: '3. இரண்டு பேருக்கும் ஒரே தசா 3, 5, 7-வது வரக்கூடாது',
+    titleEn: '3. Same 3rd, 5th, 7th Dasa Avoidance Rule',
+    manuscriptQuoteTa: 'இரண்டு பேருக்கும் ஒரே தசா 3, 5, 7-வது வரக்கூடாது',
+    isSameDasa,
     isBrideIn357Dasa,
     isGroomIn357Dasa,
     isBothIn357Dasa,
-    isKadagamViruchigamPair,
-    brideDasaDescTa: `${bDasaBhukti.dasaLordTa} (${dasaNamesMap[bDasaBhukti.dasaNumberFromBirth] || ''})`,
-    groomDasaDescTa: `${gDasaBhukti.dasaLordTa} (${dasaNamesMap[gDasaBhukti.dasaNumberFromBirth] || ''})`,
-    brideDasaNumber: bDasaBhukti.dasaNumberFromBirth,
-    groomDasaNumber: gDasaBhukti.dasaNumberFromBirth,
+    brideDasaLordTa: bDasaBhukti.dasaLordTa,
+    groomDasaLordTa: gDasaBhukti.dasaLordTa,
+    brideDasaName,
+    groomDasaName,
     status,
     statusTextTa,
     statusTextEn,
     explanationTa,
     explanationEn,
-    remedyTa: status !== 'PASS'
-      ? 'தசா நாதர்களுக்குரிய நவதிருப்பதிகள் / நவகிரக பரிகார ஸ்தலங்களுக்குச் சென்று சிறப்பு அர்ச்சனை மற்றும் நெய்தீபம் ஏற்றி வழிபடவும்.'
+    remedyTa: status === 'CRITICAL'
+      ? 'இரண்டு பேருக்கும் ஒரே தசா 3, 5, 7-வது அமைவது குடும்பத்தில் கடுமையான சோதனைகளைத் தரும் என்பதால் இச்சேர்க்கையை தவிர்ப்பது நல்லது. மீறி இணைக்க வேண்டுமாயின் அந்தந்த திசாநாதருக்குரிய நவகிரக பரிகாரங்கள், மிருத்யுஞ்சய ஹோமம் மற்றும் திருக்கடையூர் ஆயுள் சாந்தி வழிபாடு கட்டாயம் செய்ய வேண்டும்.'
+      : status === 'WARN'
+      ? 'ஒரே திசை நடப்பதால் தசாநாதருக்குரிய கிழமைகளில் நெய்தீபம் ஏற்றி வழிபட்டு, சங்கல்ப பூஜை செய்து கொள்வது நலம்.'
       : 'சிறப்பு பரிகாரம் தேவையில்லை.'
   };
 }
@@ -650,7 +639,7 @@ export function evaluateRule6_RasiAndLagna1to4(bride, groom) {
 export function evaluateSaaraamsaVidhigal(bride, groom) {
   const rule1 = evaluateRule1_SamaSaptamaLagna(bride, groom);
   const rule2 = evaluateRule2_OttraiRasiOttraiLagna(bride, groom);
-  const rule3 = evaluateRule3_OreThisaiAnd357Thisai(bride, groom);
+  const rule3 = evaluateRule3_OreDasa357VaraKoodathu(bride, groom);
   const rule4 = evaluateRule4_SeventhLordBadhakaUyirSthana(bride, groom);
   const rule5 = evaluateRule5_UbhayaLagna7thBadhaka(bride, groom);
   const rule6 = evaluateRule6_RasiAndLagna1to4(bride, groom);
@@ -707,7 +696,7 @@ export function evaluateSaaraamsaVidhigal(bride, groom) {
     badgeColor,
     rule1_samaSaptama: rule1,
     rule2_ottraiRasiLagna: rule2,
-    rule3_oreThisai357: rule3,
+    rule3_oreDasa357: rule3,
     rule4_seventhLordBadhaka: rule4,
     rule5_ubhayaLagnaBadhaka: rule5,
     rule6_rasiLagna1to4: rule6,
