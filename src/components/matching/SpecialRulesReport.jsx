@@ -25,7 +25,7 @@ export default function SpecialRulesReport({ bride, groom, lang }) {
               </span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              {lang === 'ta' ? '22-வது வைநாசிக தோஷம், 3-ம் பாவக அதிபதி Ali Karagam விதி, 48 நாட்கள் சூரிய நிலை & 8-ம் இட யோனி' : '22nd Vainasika Star, 3rd Lord Ali Karagam Rule, 48 Days Sun Stand & 8th House Yoni'}
+              {lang === 'ta' ? '22-வது வைநாசிக தோஷம், ஆணின் 3-ம் அதிபதி அலிகிரக விதி, 48 நாட்கள் சூரிய நிலை & 8-ம் இட யோனி' : '22nd Vainasika Star, 3rd Lord Ali Planet Rule, 48 Days Sun Stand & 8th House Yoni'}
             </p>
           </div>
         </div>
@@ -64,12 +64,12 @@ export default function SpecialRulesReport({ bride, groom, lang }) {
         </div>
       </div>
 
-      {/* Section 2: ஆணின் மூன்றாம் பாவகாதிபதி அலிகாரக விதி */}
+      {/* Section 2: ஆணின் மூன்றாம் அதிபதி அலிகிரக விதி */}
       <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3">
         <div className="flex items-center justify-between">
           <h4 className="text-sm font-bold text-white flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>2. {lang === 'ta' ? 'ஆணின் மூன்றாம் பாவகாதிபதி அலிகாரக விதி' : 'Groom 3rd Lord Ali Karagam Rule'}</span>
+            <span>2. {lang === 'ta' ? 'ஆணின் மூன்றாம் அதிபதி அலிகிரக விதி' : 'Groom 3rd Lord Ali Planet Rule'}</span>
           </h4>
           <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
             thirdLordStarRule?.isOverallGood
@@ -78,11 +78,11 @@ export default function SpecialRulesReport({ bride, groom, lang }) {
           }`}>
             {thirdLordStarRule?.isOverallGood
               ? (lang === 'ta' ? '✅ தோஷ நிவர்த்தி / உத்தமம்' : '✅ Dosha Nivarthi / Auspicious')
-              : (lang === 'ta' ? '⚠️ அலிகாரக சார தோஷம்' : '⚠️ Ali Karagam Star Dosha')}
+              : (lang === 'ta' ? '⚠️ அலிகிரக நட்சத்திர தோஷம்' : '⚠️ Ali Planet Star Dosha')}
           </span>
         </div>
         <div className="text-xs text-amber-200/90 bg-amber-950/20 border border-amber-500/30 p-2.5 rounded-xl font-medium">
-          📜 <strong>{lang === 'ta' ? 'சுவடி சாஸ்திர விதி:' : 'Manuscript Rule:'}</strong> {lang === 'ta' ? 'ஆணின் மூன்றாம் பாவகாதிபதி அலிகாரகம் என்று சொல்லக்கூடிய நட்சத்திரம் புதன், சனி, கேது சாரங்களில் இருக்கக் கூடாது. அவ்வாறு இருந்தால் புதன், சனி, கேது கிரகங்கள் போய் சுயசாரம் அல்லது புதன், சனி, கேது சாரங்களில் இந்த கிரகங்கள் இருக்கக் கூடாது. இப்படி இருந்தால் தோஷம், அப்படி இல்லாவிட்டால் தோஷ நிவர்த்தி.' : 'Groom 3rd house lord should not be in Ali Karaga stars (Mercury, Saturn, Ketu). If so, Mercury, Saturn, Ketu should not be in own star or in each other\'s stars; if so, it is Dosha, otherwise Dosha Nivarthi.'}
+          📜 <strong>{lang === 'ta' ? 'சுவடி சாஸ்திர விதி:' : 'Manuscript Rule:'}</strong> {lang === 'ta' ? 'ஆணின் மூன்றாம் அதிபதி அலிகிரகம் என்று சொல்லக்கூடிய சனி, புதன், கேது நட்சத்திரங்களில் அமர்ந்து, மீண்டும் அந்த கிரகம் அதே நட்சத்திரத்தில் அமர்ந்தால் தோஷம். (வேறுபட்டால் தோஷ நிவர்த்தி).' : 'If groom\'s 3rd lord sits in a star of an Ali planet (Saturn, Mercury, Ketu) and that planet sits again in the same star, it is Dosha; if it differs, it is Dosha Nivarthi.'}
         </div>
         <p className="text-xs text-slate-300 leading-relaxed bg-slate-900 p-3 rounded-xl border border-slate-800">
           {lang === 'ta' ? thirdLordStarRule?.explanationTa : thirdLordStarRule?.explanationEn}
@@ -341,7 +341,7 @@ export default function SpecialRulesReport({ bride, groom, lang }) {
               <li>👑 <strong>குரு யோனி:</strong> சனி தவிர மற்ற அனைத்து கிரகங்களும் யோனி பொருத்தம் தரும்.</li>
             </ul>
           </li>
-          <li><strong>ஆணின் மூன்றாம் பாவகாதிபதி அலிகாரக விதி:</strong> ஆணின் மூன்றாம் பாவகாதிபதி அலிகாரகம் என்று சொல்லக்கூடிய நட்சத்திரம் புதன், சனி, கேது சாரங்களில் இருக்கக் கூடாது. அவ்வாறு இருந்தால் புதன், சனி, கேது கிரகங்கள் போய் சுயசாரம் அல்லது புதன், சனி, கேது சாரங்களில் இந்த கிரகங்கள் இருக்கக் கூடாது. இப்படி இருந்தால் தோஷம், அப்படி இல்லாவிட்டால் தோஷ நிவர்த்தி.</li>
+          <li><strong>ஆணின் மூன்றாம் அதிபதி அலிகிரக விதி:</strong> ஆணின் மூன்றாம் அதிபதி அலிகிரகம் என்று சொல்லக்கூடிய சனி, புதன், கேது நட்சத்திரங்களில் அமர்ந்து, மீண்டும் அந்த கிரகம் அதே நட்சத்திரத்தில் அமர்ந்தால் தோஷம் (வேறுபட்டால் தோஷ நிவர்த்தி).</li>
           <li><strong>சூரிய நிலை 48 நாட்கள் விலக்கு:</strong> பெண் பிறந்த நாளில் சூரியன் நின்ற இடத்திலிருந்து 48 நாட்களுக்கு முன்னும் 48 நாட்களுக்கு பின்னும் ஆண் சூரியன் அமைந்திருந்தால் (1 1/2 solar months / ~48°), ஒரே காலகட்ட கிரக தோஷத் தாக்கம் ஏற்படும் என்பதால் தவிர்க்கப்பட வேண்டும்.</li>
           <li><strong>22-வது நட்சத்திரம்:</strong> பெண்ணின் நட்சத்திரத்திலிருந்து 22-வது நட்சத்திரம் ஆண் நட்சத்திரமாக வரக்கூடாது (வைநாசிக தோஷம்).</li>
         </ul>
