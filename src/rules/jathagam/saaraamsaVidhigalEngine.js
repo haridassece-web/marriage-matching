@@ -4,12 +4,6 @@
 import { getRasiById } from '../../data/rasis';
 import { getNakshatraById } from '../../data/nakshatras';
 import { calculateCompleteDhasaTimeline } from '../../engine/jathagam/dhasaBukthiEngine';
-import { 
-  evaluateRule1_RikthaTithi4_8_14, 
-  evaluateRule2_SameJanmaTithi, 
-  evaluateRule3_GirlMudakkuInBoyRasiLagna, 
-  evaluateRule4_GirlThuvadasiBoyAmavasaiPournami 
-} from './thithiRules';
 
 /**
  * Helper to check if a Rasi ID is an Odd Sign (ஒற்றை ராசி)
@@ -660,53 +654,20 @@ export function evaluateSaaraamsaVidhigal(bride, groom) {
   const rule4 = evaluateRule4_SeventhLordBadhakaUyirSthana(bride, groom);
   const rule5 = evaluateRule5_UbhayaLagna7thBadhaka(bride, groom);
   const rule6 = evaluateRule6_RasiAndLagna1to4(bride, groom);
-  
-  // Manuscript Tithi & Mudakku Rules (விதிகள் 7, 8, 9, 10)
-  const rule7 = {
-    ...evaluateRule1_RikthaTithi4_8_14(bride, groom),
-    ruleNumber: 7,
-    titleTa: '7. 4, 8, 14 திதி சரிக்கைக் கூடாது விதி (Riktha Tithi Avoidance)',
-    titleEn: '7. Boy or Girl 4, 8, 14 Tithi Avoidance Rule'
-  };
-  const rule8 = {
-    ...evaluateRule2_SameJanmaTithi(bride, groom),
-    ruleNumber: 8,
-    titleTa: '8. ஏக ஜன்ம திதி விலக்கு விதி (Same Janma Tithi Avoidance)',
-    titleEn: '8. Both Boy & Girl Same Janma Tithi Avoidance Rule'
-  };
-  const rule9 = {
-    ...evaluateRule3_GirlMudakkuInBoyRasiLagna(bride, groom),
-    ruleNumber: 9,
-    titleTa: '9. பெண் முடக்கு அதிபதி ஆண் ராசி/லக்ன விலக்கு விதி',
-    titleEn: '9. Girl Mudakku Lord in Boy Rasi & Lagna Avoidance Rule'
-  };
-  const rule10 = {
-    ...evaluateRule4_GirlThuvadasiBoyAmavasaiPournami(bride, groom),
-    ruleNumber: 10,
-    titleTa: '10. பெண் துவாதசி - ஆண் அமாவாசை/பௌர்ணமி விலக்கு விதி',
-    titleEn: '10. Bride Thuvadasi vs Groom Amavasai/Pournami Avoidance Rule'
-  };
 
-  const rulesList = [rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10];
+  const rulesList = [rule1, rule2, rule3, rule4, rule5, rule6];
 
   // Scoring Calculation
   let points = 100;
-  if (rule1.status === 'WARN') points -= 10;
-  if (rule2.status === 'CRITICAL') points -= 20;
-  else if (rule2.status === 'WARN') points -= 10;
-  if (rule3.status === 'CRITICAL') points -= 20;
-  else if (rule3.status === 'WARN') points -= 10;
-  if (rule4.status === 'WARN') points -= 10;
-  if (rule5.status === 'WARN') points -= 10;
-  if (rule6.status === 'CRITICAL') points -= 20;
-  else if (rule6.status === 'WARN') points -= 10;
-
-  // Tithi & Mudakku deductions
-  if (rule7.status === 'CRITICAL') points -= 20;
-  if (rule8.status === 'CRITICAL') points -= 20;
-  else if (rule8.status === 'WARN') points -= 10;
-  if (rule9.status === 'CRITICAL') points -= 20;
-  if (rule10.status === 'CRITICAL') points -= 20;
+  if (rule1.status === 'WARN') points -= 15;
+  if (rule2.status === 'CRITICAL') points -= 30;
+  else if (rule2.status === 'WARN') points -= 15;
+  if (rule3.status === 'CRITICAL') points -= 30;
+  else if (rule3.status === 'WARN') points -= 15;
+  if (rule4.status === 'WARN') points -= 15;
+  if (rule5.status === 'WARN') points -= 15;
+  if (rule6.status === 'CRITICAL') points -= 30;
+  else if (rule6.status === 'WARN') points -= 15;
 
   const scorePercent = Math.max(0, Math.min(100, points));
 
@@ -717,13 +678,13 @@ export function evaluateSaaraamsaVidhigal(bride, groom) {
   const isAllAuspicious = criticalCount === 0 && warningCount === 0;
   const isRecommended = criticalCount === 0 && warningCount <= 1;
 
-  let overallStatusTa = '✅ சாராம்ச & சுவடி விதிகள் உத்தமம் (பொருத்தம் நன்று)';
-  let overallStatusEn = '✅ Essence & Manuscript Rules Highly Auspicious';
+  let overallStatusTa = '✅ சாராம்ச விதிகள் உத்தமம் (பொருத்தம் நன்று)';
+  let overallStatusEn = '✅ Essence Rules Highly Auspicious';
   let badgeColor = 'emerald';
 
   if (criticalCount > 0) {
-    overallStatusTa = '🛑 சுவடி சாராம்ச விதி விலக்கு எச்சரிக்கை (பொருந்தாது)';
-    overallStatusEn = '🛑 Manuscript Rule Critical Alert (Caution Advised)';
+    overallStatusTa = '🛑 சாராம்ச விதி விலக்கு எச்சரிக்கை (கவனம் தேவை)';
+    overallStatusEn = '🛑 Essence Rule Critical Alert (Caution Advised)';
     badgeColor = 'rose';
   } else if (warningCount > 1) {
     overallStatusTa = '⚠️ சாராம்ச விதிகளில் கவனம் தேவை (பரிகாரம் அவசியம்)';
@@ -732,13 +693,13 @@ export function evaluateSaaraamsaVidhigal(bride, groom) {
   }
 
   return {
-    titleTa: 'திருமண பொருத்தத்தின் 10 சாராம்ச விதிகள் (சுவடி சாஸ்திரம்)',
-    titleEn: '10 Essence Rules of Marriage Matching (Palm-Leaf Manuscript)',
+    titleTa: 'திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள்',
+    titleEn: '6 Essence Rules of Marriage Matching',
     scorePercent,
     passedCount,
     warningCount,
     criticalCount,
-    totalRules: 10,
+    totalRules: 6,
     isAllAuspicious,
     isRecommended,
     overallStatusTa,
@@ -750,10 +711,6 @@ export function evaluateSaaraamsaVidhigal(bride, groom) {
     rule4_seventhLordBadhaka: rule4,
     rule5_ubhayaLagnaBadhaka: rule5,
     rule6_rasiLagna1to4: rule6,
-    rule7_rikthaTithi4_8_14: rule7,
-    rule8_sameJanmaTithi: rule8,
-    rule9_girlMudakkuInBoyRasiLagna: rule9,
-    rule10_girlThuvadasiBoyAmavasaiPournami: rule10,
     rulesList
   };
 }

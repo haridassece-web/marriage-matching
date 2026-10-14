@@ -229,13 +229,13 @@ export default function MatchingReport({ matchingData, lang, onPrint }) {
           </table>
         </div>
 
-        {/* Section 5: திருமண பொருத்தத்தின் சாராம்ச & திதி விதிகள் (Palm-Leaf Manuscript Rules) */}
+        {/* Section 5: திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள் (6 Essence Manuscript Rules) */}
         {saaraamsaResult && (
           <div className="mb-6">
             <h2 className="text-sm font-bold text-amber-900 border-b border-amber-300 pb-1 mb-3 uppercase tracking-wider flex items-center justify-between">
-              <span>{lang === 'ta' ? `5. திருமண பொருத்தத்தின் ${saaraamsaResult.totalRules || 10} சாராம்ச & திதி விதிகள் (ஓலைச்சுவடி சாஸ்திரம்)` : `5. ${saaraamsaResult.totalRules || 10} Essence & Tithi Rules of Marriage Matching (Palm-Leaf Manuscript)`}</span>
+              <span>{lang === 'ta' ? '5. திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள் (ஓலைச்சுவடி சாஸ்திரம்)' : '5. 6 Essence Rules of Marriage Matching (Palm-Leaf Manuscript)'}</span>
               <span className="text-xs font-mono font-bold text-amber-800">
-                {saaraamsaResult.passedCount} / {saaraamsaResult.totalRules} {lang === 'ta' ? 'சுபம்' : 'Passed'} ({saaraamsaResult.scorePercent}%)
+                {saaraamsaResult.passedCount} / {saaraamsaResult.totalRules || 6} {lang === 'ta' ? 'சுபம்' : 'Passed'} ({saaraamsaResult.scorePercent}%)
               </span>
             </h2>
             <table className="w-full text-xs border-collapse border border-slate-300">
@@ -257,6 +257,47 @@ export default function MatchingReport({ matchingData, lang, onPrint }) {
                     </td>
                     <td className={`border border-slate-300 p-1.5 text-center font-bold text-[10px] ${
                       rule.status === 'PASS' ? 'text-emerald-700' : rule.status === 'MITIGATED' ? 'text-cyan-700' : 'text-rose-700'
+                    }`}>
+                      {lang === 'ta' ? rule.statusTextTa : rule.statusTextEn}
+                    </td>
+                    <td className="border border-slate-300 p-1.5 text-slate-700 text-[11px] leading-relaxed">
+                      {lang === 'ta' ? rule.explanationTa : rule.explanationEn}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Section 6: சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள் (4 Tithi & Mudakku Manuscript Rules) */}
+        {thithiResult && (
+          <div className="mb-6">
+            <h2 className="text-sm font-bold text-amber-900 border-b border-amber-300 pb-1 mb-3 uppercase tracking-wider flex items-center justify-between">
+              <span>{lang === 'ta' ? '6. சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள்' : '6. 4 Classical Tithi & Mudakku Manuscript Rules'}</span>
+              <span className="text-xs font-mono font-bold text-amber-800">
+                {thithiResult.passedCount} / {thithiResult.totalRules || 4} {lang === 'ta' ? 'சுபம்' : 'Passed'} ({thithiResult.scorePercent}%)
+              </span>
+            </h2>
+            <table className="w-full text-xs border-collapse border border-slate-300">
+              <thead>
+                <tr className="bg-amber-100/60 text-amber-900">
+                  <th className="border border-slate-300 p-1.5 text-center w-8">#</th>
+                  <th className="border border-slate-300 p-1.5 text-left w-1/3">திதி & முடக்கு விதி (Rule & Citation)</th>
+                  <th className="border border-slate-300 p-1.5 text-center w-28">நிலை (Status)</th>
+                  <th className="border border-slate-300 p-1.5 text-left">விளக்கம் & பலன் (Astrological Result)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {thithiResult.rulesList.map((rule) => (
+                  <tr key={rule.ruleNumber} className={rule.ruleNumber % 2 === 0 ? 'bg-slate-50' : 'bg-white'}>
+                    <td className="border border-slate-300 p-1.5 text-center font-bold">{rule.ruleNumber}</td>
+                    <td className="border border-slate-300 p-1.5">
+                      <div className="font-semibold text-slate-900">{lang === 'ta' ? rule.titleTa : rule.titleEn}</div>
+                      <div className="text-[10px] text-amber-800 italic mt-0.5">"{rule.manuscriptQuoteTa}"</div>
+                    </td>
+                    <td className={`border border-slate-300 p-1.5 text-center font-bold text-[10px] ${
+                      rule.status === 'PASS' ? 'text-emerald-700' : rule.status === 'WARN' ? 'text-amber-700' : 'text-rose-700'
                     }`}>
                       {lang === 'ta' ? rule.statusTextTa : rule.statusTextEn}
                     </td>

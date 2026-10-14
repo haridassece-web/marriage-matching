@@ -11,6 +11,7 @@ import KattaPoruthamReport from '../components/matching/KattaPoruthamReport';
 import SpecialRulesReport from '../components/matching/SpecialRulesReport';
 import ProgenyAndSpecialRulesReport from '../components/matching/ProgenyAndSpecialRulesReport';
 import SaaraamsaVidhigalReport from '../components/matching/SaaraamsaVidhigalReport';
+import ThithiRulesReport from '../components/matching/ThithiRulesReport';
 import RasiChart from '../components/jathagam/RasiChart';
 import NavamsamChart from '../components/jathagam/NavamsamChart';
 import PlanetaryDegreesTable from '../components/jathagam/PlanetaryDegreesTable';
@@ -18,7 +19,7 @@ import DhasaBukthiReport from '../components/matching/DhasaBukthiReport';
 import MatchingReport from '../components/matching/MatchingReport';
 import { calculateMarriageMatching } from '../engine/matching/marriageMatchingEngine';
 import { calculatePanchangamFromBirthDetails } from '../engine/jathagam/panchangamCalculator';
-import { Sparkles, Printer, FileText, CheckCircle, ShieldAlert, Grid, Award, Baby, Compass, Clock, Scroll } from 'lucide-react';
+import { Sparkles, Printer, FileText, CheckCircle, ShieldAlert, Grid, Award, Baby, Compass, Clock, Scroll, Moon } from 'lucide-react';
 
 export default function MarriageMatchingPage() {
   const [lang, setLang] = useState('ta'); // 'ta' or 'en'
@@ -187,10 +188,29 @@ export default function MarriageMatchingPage() {
               }`}
             >
               <Scroll className="w-4 h-4 text-cyan-400" />
-              <span>{lang === 'ta' ? '📜 10 சாராம்ச & திதி விதிகள்' : '10 Essence & Tithi Rules'}</span>
+              <span>{lang === 'ta' ? '📜 6 சாராம்ச விதிகள்' : '6 Essence Rules'}</span>
               {matchingData.saaraamsaResult?.criticalCount > 0 ? (
                 <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
               ) : matchingData.saaraamsaResult?.warningCount > 0 ? (
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
+              ) : (
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('THITHI_MUDAKKU')}
+              className={`px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
+                activeTab === 'THITHI_MUDAKKU'
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 shadow-md font-black'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Moon className="w-4 h-4 text-cyan-400" />
+              <span>{lang === 'ta' ? '🌙 4 திதி & முடக்கு விதிகள்' : '4 Tithi & Mudakku Rules'}</span>
+              {matchingData.thithiResult?.criticalCount > 0 ? (
+                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+              ) : matchingData.thithiResult?.warningCount > 0 ? (
                 <span className="w-2 h-2 rounded-full bg-amber-400" />
               ) : (
                 <span className="w-2 h-2 rounded-full bg-emerald-400" />
@@ -352,10 +372,17 @@ export default function MarriageMatchingPage() {
           </div>
         )}
 
-        {/* Tab: திருமண பொருத்தத்தின் சாராம்ச விதிகள் (5 Essence Manuscript Rules View) */}
+        {/* Tab: திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள் (6 Essence Manuscript Rules View) */}
         {activeTab === 'SAARAAMSA' && (
           <div className="animate-fadeIn">
             <SaaraamsaVidhigalReport bride={bride} groom={groom} lang={lang} />
+          </div>
+        )}
+
+        {/* Tab: சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள் (4 Classical Tithi & Mudakku Rules View) */}
+        {activeTab === 'THITHI_MUDAKKU' && (
+          <div className="animate-fadeIn">
+            <ThithiRulesReport bride={bride} groom={groom} lang={lang} />
           </div>
         )}
 
