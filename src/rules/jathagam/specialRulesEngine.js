@@ -114,10 +114,12 @@ export function evaluateSpecialMarriageRules(bride, groom) {
 
   const g3rdRasiInfo = getRasiById(g3rdHouseRasi);
   const g3rdLordName = g3rdRasiInfo.lordTa;
+  const g3rdLordNameEn = g3rdRasiInfo.lordEn;
   const g3rdLordId = g3rdRasiInfo.lordId;
 
   let g3rdLordStarId = 1;
   let g3rdLordStarName = '';
+  let g3rdLordStarNameEn = '';
   let g3rdLordStarLord = '';
 
   let gGrahas = groom.allGrahas;
@@ -131,23 +133,56 @@ export function evaluateSpecialMarriageRules(bride, groom) {
     const g3rdLordGraha = gGrahas.find(g => g.code === lordCodeMap[g3rdLordId]);
     if (g3rdLordGraha && g3rdLordGraha.starNakshatra) {
       g3rdLordStarId = g3rdLordGraha.starNakshatra.id;
-      g3rdLordStarName = g3rdLordGraha.starNakshatra.name || g3rdLordGraha.starNakshatra.nameTa || '';
-      g3rdLordStarLord = g3rdLordGraha.starNakshatra.lord || g3rdLordGraha.starNakshatra.lordTa || '';
+      const g3rdNak = getNakshatraById(g3rdLordStarId);
+      g3rdLordStarName = g3rdNak.nameTa;
+      g3rdLordStarNameEn = g3rdNak.nameEn;
+      g3rdLordStarLord = g3rdNak.lordTa;
     }
   }
 
   const isGroom3rdLordInRestrictedStar = RESTRICTED_STARS.includes(g3rdLordStarId);
   
-  // Check if both are in the EXACT SAME planetary star lord (e.g. Both Budhan-Budhan, Both Sani-Sani, Both Ketu-Ketu)
-  const isSamePlanetarySaram = isGroom3rdLordInRestrictedStar && (
-    (BUDHAN_STARS.includes(g3rdLordStarId) && BUDHAN_STARS.includes(bNakId)) ||
-    (SANI_STARS.includes(g3rdLordStarId) && SANI_STARS.includes(bNakId)) ||
-    (KETU_STARS.includes(g3rdLordStarId) && KETU_STARS.includes(bNakId))
-  );
+  let aliPlanetCode = '';
+  let aliPlanetNameTa = '';
+  let aliPlanetNameEn = '';
 
-  // If groom 3rd lord is in Budhan/Sani/Ketu star, but Bride is NOT in the exact same planetary star -> NEUTRALIZED & GOOD!
-  const isNeutralizedAndGood = isGroom3rdLordInRestrictedStar && !isSamePlanetarySaram;
+  if (BUDHAN_STARS.includes(g3rdLordStarId)) {
+    aliPlanetCode = 'MERC';
+    aliPlanetNameTa = 'புதன்';
+    aliPlanetNameEn = 'Mercury';
+  } else if (SANI_STARS.includes(g3rdLordStarId)) {
+    aliPlanetCode = 'SAT';
+    aliPlanetNameTa = 'சனி';
+    aliPlanetNameEn = 'Saturn';
+  } else if (KETU_STARS.includes(g3rdLordStarId)) {
+    aliPlanetCode = 'KETU';
+    aliPlanetNameTa = 'கேது';
+    aliPlanetNameEn = 'Ketu';
+  }
+
+  let aliPlanetStarId = null;
+  let aliPlanetStarName = '';
+  let aliPlanetStarNameEn = '';
+  let isSameStarAfflicted = false;
+
+  if (isGroom3rdLordInRestrictedStar && gGrahas) {
+    const aliGraha = gGrahas.find(g => g.code === aliPlanetCode);
+    if (aliGraha && aliGraha.starNakshatra) {
+      aliPlanetStarId = aliGraha.starNakshatra.id;
+      const nak = getNakshatraById(aliPlanetStarId);
+      aliPlanetStarName = nak.nameTa;
+      aliPlanetStarNameEn = nak.nameEn;
+
+      // Rule: If that Ali planet sits in the same star OR in an Ali karagam star -> Afflicted
+      if (aliPlanetStarId === g3rdLordStarId || RESTRICTED_STARS.includes(aliPlanetStarId)) {
+        isSameStarAfflicted = true;
+      }
+    }
+  }
+
+  // If groom 3rd lord is in Ali star, but that Ali planet is NOT in the same star or Ali star -> NEUTRALIZED & GOOD!
   const isDirectGood = !isGroom3rdLordInRestrictedStar;
+  const isNeutralizedAndGood = isGroom3rdLordInRestrictedStar && !isSameStarAfflicted;
   const isOverallGood = isDirectGood || isNeutralizedAndGood;
 
   return {
@@ -203,20 +238,24 @@ export function evaluateSpecialMarriageRules(bride, groom) {
       g3rdLordName,
       g3rdLordStarName,
       g3rdLordStarLord,
+      aliPlanetName: aliPlanetNameTa,
+      aliPlanetNameEn,
+      aliPlanetStarName,
+      aliPlanetStarNameEn,
       isGroom3rdLordInRestrictedStar,
-      isSamePlanetarySaram,
+      isSameStarAfflicted,
       isNeutralizedAndGood,
       isOverallGood,
       explanationTa: isDirectGood
         ? `✅ உத்தம சுப யோகம்! ஆணின் மூன்றாம் அதிபதி (${g3rdLordName}) அலிகிரக நட்சத்திரங்களில் (சனி, புதன், கேது) அமையாமல் சுப சாரத்தில் உள்ளார் (${g3rdLordStarName ? g3rdLordStarName + ' சாரம்' : 'சுப சாரம்'}).`
         : isNeutralizedAndGood
-        ? `✅ தோஷ நிவர்த்தி (உத்தம சுப யோகம்)! ஆணின் மூன்றாம் அதிபதி (${g3rdLordName}) அலிகிரக நட்சத்திரத்தில் (${g3rdLordStarName || 'அலிகிரக சாரம்'}) அமர்ந்தாலும், மீண்டும் அலிகிரகம் என்று சொல்லக்கூடிய (சனி, புதன், கேது) அந்த கிரகம் அதே நட்சத்திரத்தில் அமையாமல் வேறுபட்டு அமைவதால் தோஷம் நிவர்த்தியாகி உத்தம சுப யோகம் தருகிறது.`
-        : `⚠️ அலிகிரக நட்சத்திர தோஷம்! ஆணின் மூன்றாம் அதிபதி (${g3rdLordName}) அலிகிரக நட்சத்திரத்தில் (${g3rdLordStarName || 'அலிகிரக சாரம்'}) அமர்ந்து, மீண்டும் அலிகிரகம் என்று சொல்லக்கூடிய (சனி, புதன், கேது) அந்த கிரகம் அதே நட்சத்திரத்தில் அமைந்துள்ளதால் தோஷம் ஏற்படுகிறது.`,
+        ? `✅ தோஷ நிவர்த்தி (உத்தம சுப யோகம்)! ஆணின் மூன்றாம் அதிபதி (${g3rdLordName}) அலிகிரக நட்சத்திரத்தில் (${g3rdLordStarName || 'அலிகிரக சாரம்'}) அமர்ந்தாலும், அலிகிரகமான ${aliPlanetNameTa} அதே நட்சத்திரத்திலோ அலிகிரக சாரத்திலோ அமையாமல் வேறுபட்டு (${aliPlanetStarName ? aliPlanetStarName + ' நட்சத்திரத்தில்' : 'சுப சாரத்தில்'}) அமைந்துள்ளதால் தோஷம் நிவர்த்தியாகி உத்தம சுப யோகம் தருகிறது.`
+        : `⚠️ அலிகிரக நட்சத்திர தோஷம்! ஆணின் மூன்றாம் அதிபதி (${g3rdLordName}) அலிகிரக நட்சத்திரத்தில் (${g3rdLordStarName || 'அலிகிரக சாரம்'}) அமர்ந்து, மீண்டும் அலிகிரகமான ${aliPlanetNameTa} அதே நட்சத்திரத்தில் / அலிகிரக நட்சத்திரத்தில் (${aliPlanetStarName}) அமைந்துள்ளதால் தோஷம் ஏற்படுகிறது.`,
       explanationEn: isDirectGood
-        ? `✅ Groom's 3rd Lord (${g3rdLordName}) is in non-Mercury/Saturn/Ketu star (Auspicious).`
+        ? `✅ Auspicious Placement! Groom's 3rd Lord (${g3rdLordName}) is in non-Mercury/Saturn/Ketu star (${g3rdLordStarNameEn || 'Auspicious star'}).`
         : isNeutralizedAndGood
-        ? `✅ Dosha Neutralized (Uttama Subha Yogam)! Groom 3rd Lord is in Budhan/Saturn/Ketu star, but Bride is NOT in the same planetary star. Neutralized & Auspicious.`
-        : `⚠️ Shared Planetary Star Conflict! Both Groom 3rd Lord and Bride share the exact same planetary star lord.`
+        ? `✅ Dosha Neutralized (Uttama Subha Yogam)! Groom 3rd Lord (${g3rdLordName}) is in Ali planet star (${g3rdLordStarNameEn}), but ${aliPlanetNameEn} is placed in a different star (${aliPlanetStarNameEn}), neutralizing the dosha into auspiciousness.`
+        : `⚠️ Ali Planet Star Dosha! Groom's 3rd Lord (${g3rdLordName}) is in Ali star (${g3rdLordStarNameEn}) and ${aliPlanetNameEn} is also placed in the same / Ali star (${aliPlanetStarNameEn}).`
     }
   };
 }
