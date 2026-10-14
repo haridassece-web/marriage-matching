@@ -81,7 +81,7 @@ export default function SpecialRulesReport({ bride, groom, lang }) {
               : (lang === 'ta' ? '⚠️ அலிகிரக நட்சத்திர தோஷம்' : '⚠️ Ali Planet Star Dosha')}
           </span>
         </div>
-        <div className="text-xs text-amber-200/90 bg-amber-950/20 border border-amber-500/30 p-2.5 rounded-xl font-medium">
+        <div className="text-xs text-amber-200 bg-amber-950/40 border border-amber-500/40 p-3 rounded-xl font-medium leading-relaxed">
           📜 <strong>{lang === 'ta' ? 'சுவடி சாஸ்திர விதி:' : 'Manuscript Rule:'}</strong> {lang === 'ta' ? 'ஆணின் மூன்றாம் அதிபதி அலிகிரகம் என்று சொல்லக்கூடிய சனி, புதன், கேது நட்சத்திரங்களில் அமர்ந்து, மீண்டும் அந்த கிரகம் அதே நட்சத்திரத்தில் அமர்ந்தால் தோஷம். (வேறுபட்டால் தோஷ நிவர்த்தி).' : 'If groom\'s 3rd lord sits in a star of an Ali planet (Saturn, Mercury, Ketu) and that planet sits again in the same star, it is Dosha; if it differs, it is Dosha Nivarthi.'}
         </div>
         <p className="text-xs text-slate-300 leading-relaxed bg-slate-900 p-3 rounded-xl border border-slate-800">

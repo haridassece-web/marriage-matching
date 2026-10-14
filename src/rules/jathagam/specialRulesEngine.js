@@ -3,6 +3,7 @@
 
 import { getNakshatraById } from '../../data/nakshatras';
 import { getRasiById } from '../../data/rasis';
+import { calculatePanchangamFromBirthDetails } from '../../engine/jathagam/panchangamCalculator';
 
 /**
  * Evaluates Special Marriage Rules:
@@ -119,13 +120,19 @@ export function evaluateSpecialMarriageRules(bride, groom) {
   let g3rdLordStarName = '';
   let g3rdLordStarLord = '';
 
-  if (groom.allGrahas) {
+  let gGrahas = groom.allGrahas;
+  if (!gGrahas && groom.dob) {
+    const calc = calculatePanchangamFromBirthDetails(groom.dob, groom.tob || '10:15');
+    if (calc && calc.allGrahas) gGrahas = calc.allGrahas;
+  }
+
+  if (gGrahas) {
     const lordCodeMap = { 1: 'SUN', 2: 'MOON', 3: 'MARS', 4: 'MERC', 5: 'JUP', 6: 'VEN', 7: 'SAT' };
-    const g3rdLordGraha = groom.allGrahas.find(g => g.code === lordCodeMap[g3rdLordId]);
+    const g3rdLordGraha = gGrahas.find(g => g.code === lordCodeMap[g3rdLordId]);
     if (g3rdLordGraha && g3rdLordGraha.starNakshatra) {
       g3rdLordStarId = g3rdLordGraha.starNakshatra.id;
-      g3rdLordStarName = g3rdLordGraha.starNakshatra.nameTa || g3rdLordGraha.starNakshatra.name || '';
-      g3rdLordStarLord = g3rdLordGraha.starNakshatra.lordTa || g3rdLordGraha.starNakshatra.lord || '';
+      g3rdLordStarName = g3rdLordGraha.starNakshatra.name || g3rdLordGraha.starNakshatra.nameTa || '';
+      g3rdLordStarLord = g3rdLordGraha.starNakshatra.lord || g3rdLordGraha.starNakshatra.lordTa || '';
     }
   }
 
