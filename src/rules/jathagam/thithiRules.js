@@ -3,7 +3,7 @@
 // 2. Rule 2: Same Janma Tithi Avoidance (இருவருக்கும் ஒரே ஜன்ம திதி இருக்கக்கூடாது - ஏக திதி தோஷம்)
 // 3. Rule 3: Bride Mudakku Lord in Groom Rasi/Lagna Avoidance (பெண் முடக்கு அதிபதி ஆண் ஜாதகம் ராசி & லக்கினத்தில் வரக்கூடாது)
 // 4. Rule 4: Bride Thuvadasi vs Groom Amavasai/Pournami Avoidance (பெண் துவாதசி - ஆண் அமாவாசை/பௌர்ணமி விலக்கு விதி)
-// 5. Rule 5: Bride 9th House & Groom 10th House Mudakku Avoidance (பெண்ணிற்கு 9-ம் இடம் முடக்கு & ஆணிற்கு 10-ம் இடம் முடக்கு விலக்கு விதி)
+// 5. Rule 5: Bride 9th House & Groom 10th House Mudakku Avoidance (பெண் லக்னத்திற்கு 9-ம் இடம் முடக்கு, ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு இருந்தால் இணைக்கக் கூடாது)
 
 import { calculatePanchangamFromBirthDetails, calculateTithiFromDiff } from '../../engine/jathagam/panchangamCalculator';
 import { getMudakkuInfo, checkGirlMudakkuInBoyRasiLagna } from './mudakkuRules';
@@ -291,11 +291,11 @@ export function evaluateRule4_GirlThuvadasiBoyAmavasaiPournami(bride, groom) {
 
 /**
  * RULE 5:
- * "பெண்ணிற்கு genma lakanam thiruku 9-ம் இடம் முடக்கும், ஆணிற்கு genma lakanam thiruku 10-ம் இடம் முடக்கும் இருக்கும் ஜாதகத்தை இணைக்கக் கூடாது."
- * (Bride 9th House from Janma Lagna Mudakku & Groom 10th House from Janma Lagna Mudakku Avoidance Rule)
+ * "பெண் லக்னத்திற்கு 9-ம் இடம் முடக்கு, ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு இருந்தால் இணைக்கக் கூடாது"
+ * (Bride 9th House & Groom 10th House Mudakku Avoidance Rule)
  * - Bride's 9th house from Janma Lagna is Bhagya Sthana (பாக்கிய ஸ்தானம் / தர்மம் / மாங்கல்ய விருத்தி). If it is Mudakku Rasi, it causes Bhagya Mudakku.
  * - Groom's 10th house from Janma Lagna is Jeevana / Karma Sthana (ஜீவன ஸ்தானம் / தொழில் / கௌரவம்). If it is Mudakku Rasi, it causes Jeevana Mudakku.
- * - If Bride has 9th house Mudakku AND Groom has 10th house Mudakku, such horoscopes MUST NOT be joined (🛑 NOT MATCH / இணைக்கக் கூடாது).
+ * - If Bride has 9th house Mudakku OR Groom has 10th house Mudakku (or both), such horoscopes MUST NOT be joined (🛑 NOT MATCH / இணைக்கக் கூடாது).
  */
 export function evaluateRule5_Bride9thGroom10thMudakkuAvoidance(bride, groom) {
   const bMudakku = getMudakkuInfo(bride);
@@ -307,7 +307,7 @@ export function evaluateRule5_Bride9thGroom10thMudakkuAvoidance(bride, groom) {
   // Groom 10th House from Janma Lagna Mudakku (ஜீவன / தொழில் முடக்கு)
   const isGroom10thMudakku = gMudakku.houseFromLagna === 10;
 
-  // Both condition: "பெண்ணிற்கு genma lakanam thiruku 9-ம் இடம் முடக்கும், ஆணிற்கு genma lakanam thiruku 10-ம் இடம் முடக்கும் இருக்கும் ஜாதகத்தை இணைக்கக் கூடாது."
+  // Both condition
   const isBoth9th10thMudakku = isBride9thMudakku && isGroom10thMudakku;
 
   let status = 'PASS';
@@ -319,33 +319,33 @@ export function evaluateRule5_Bride9thGroom10thMudakkuAvoidance(bride, groom) {
 
   if (isBoth9th10thMudakku) {
     status = 'CRITICAL';
-    statusTextTa = '🛑 பொருந்தாது (பெண்ணிற்கு 9-ல் முடக்கு & ஆணிற்கு 10-ல் முடக்கு)';
+    statusTextTa = '🛑 பொருந்தாது (பெண் 9-ல் முடக்கு & ஆண் 10-ல் முடக்கு - இணைக்கக் கூடாது)';
     statusTextEn = '🛑 NOT MATCH (Bride 9th Mudakku & Groom 10th Mudakku Conflict)';
-    explanationTa = `🛑 பொருந்தாது (இணைக்கக் கூடாது)! சுவடி சாஸ்திர விதி: "பெண்ணிற்கு genma lakanam thiruku 9-ம் இடம் முடக்கும், ஆணிற்கு genma lakanam thiruku 10-ம் இடம் முடக்கும் இருக்கும் ஜாதகத்தை இணைக்கக் கூடாது." பெண் ஜாதகத்தில் லக்னத்திற்கு 9-ம் இடம் (${bMudakku.mudakkuRasiNameTa}) பாக்கிய முடக்காகவும், ஆண் ஜாதகத்தில் லக்னத்திற்கு 10-ம் இடம் (${gMudakku.mudakkuRasiNameTa}) ஜீவன முடக்காகவும் அமைந்துள்ளது. இதனால் இருவரின் பாக்கியமும் தொழிலும் முடங்கி குடும்பத்தில் வறுமை மற்றும் சோதனைகள் உண்டாகும் என்பதால் இச்சேர்க்கை சாஸ்திரப்படி தவிர்க்கப்பட வேண்டும்!`;
+    explanationTa = `🛑 பொருந்தாது (இணைக்கக் கூடாது)! சுவடி சாஸ்திர விதி: "பெண் லக்னத்திற்கு 9-ம் இடம் முடக்கு, ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு இருந்தால் இணைக்கக் கூடாது." பெண் ஜாதகத்தில் லக்னத்திற்கு 9-ம் இடம் (${bMudakku.mudakkuRasiNameTa}) பாக்கிய முடக்காகவும், ஆண் ஜாதகத்தில் லக்னத்திற்கு 10-ம் இடம் (${gMudakku.mudakkuRasiNameTa}) ஜீவன முடக்காகவும் ஒருசேர அமைந்துள்ளது. இதனால் இருவரின் பாக்கியமும் தொழிலும் முடங்கி குடும்பத்தில் வறுமை மற்றும் சோதனைகள் உண்டாகும் என்பதால் இச்சேர்க்கை முற்றிலும் தவிர்க்கப்பட வேண்டும் (NOT MATCH)!`;
     explanationEn = `🛑 NOT MATCH! Classical Palm-Leaf Rule: "Horoscopes where Bride has Mudakku in the 9th house from Janma Lagna, and Groom has Mudakku in the 10th house from Janma Lagna, must NOT be joined." Bride suffers Bhagya Mudakku (9th house - ${bMudakku.mudakkuRasiNameEn}) and Groom suffers Jeevana/Career Mudakku (10th house - ${gMudakku.mudakkuRasiNameEn}). Simultaneous affliction cripples domestic prosperity.`;
   } else if (isBride9thMudakku) {
-    status = 'WARN';
-    statusTextTa = '⚠️ பெண்ணிற்கு ஜன்ம லக்னத்திற்கு 9-ம் இடம் பாக்கிய முடக்கு';
-    statusTextEn = '⚠️ Bride 9th House Bhagya Mudakku Warning';
-    explanationTa = `⚠️ சுவடி சாஸ்திர எச்சரிக்கை: பெண்ணின் ஜன்ம லக்னத்திற்கு 9-ம் இடம் (${bMudakku.mudakkuRasiNameTa}) முடக்கு ராசியாக அமைந்துள்ளது. 9-ம் இடம் பாக்கிய ஸ்தானம் (பித்ரு, மாங்கல்யம் & தர்ம ஸ்தானம்) என்பதால், இல்லற பாக்கியத்தில் தடைகள் ஏற்படாமல் இருக்க முடக்கு அதிபதி (${bMudakku.mudakkuLordTa}) வழிபாடுகள் தேவைப்படுகிறது. (ஆணிற்கு 10-ம் இடம் முடக்கு இல்லை - ${gMudakku.houseFromLagna}-ஆம் இடம்).`;
-    explanationEn = `⚠️ Manuscript Warning: Bride has Mudakku in the 9th house from Janma Lagna (${bMudakku.mudakkuRasiNameEn}), indicating Bhagya Mudakku. Groom does not have 10th house Mudakku (Groom house: ${gMudakku.houseFromLagna}). Protective remedies advised.`;
+    status = 'CRITICAL';
+    statusTextTa = '🛑 பொருந்தாது (பெண் லக்னத்திற்கு 9-ம் இடம் முடக்கு - இணைக்கக் கூடாது)';
+    statusTextEn = '🛑 NOT MATCH (Bride 9th House Bhagya Mudakku)';
+    explanationTa = `🛑 பொருந்தாது (இணைக்கக் கூடாது)! சுவடி சாஸ்திர விதி: "பெண் லக்னத்திற்கு 9-ம் இடம் முடக்கு, ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு இருந்தால் இணைக்கக் கூடாது." பெண்ணின் ஜன்ம லக்னத்திற்கு 9-ம் இடம் (${bMudakku.mudakkuRasiNameTa}) பாக்கிய முடக்காக அமைந்துள்ளது. 9-ம் இடம் பாக்கிய ஸ்தானம் (பித்ரு, மாங்கல்யம் & தர்ம ஸ்தானம்) என்பதால், இல்லற பாக்கியம் முடங்கும் என்பதால் இச்சேர்க்கை தவிர்க்கப்பட வேண்டும்!`;
+    explanationEn = `🛑 NOT MATCH! Manuscript Rule: "Bride 9th House Mudakku, Groom 10th House Mudakku should not be joined." Bride has Mudakku in the 9th house from Janma Lagna (${bMudakku.mudakkuRasiNameEn}), causing Bhagya Mudakku. Alliance should be avoided.`;
   } else if (isGroom10thMudakku) {
-    status = 'WARN';
-    statusTextTa = '⚠️ ஆணிற்கு ஜன்ம லக்னத்திற்கு 10-ம் இடம் ஜீவன முடக்கு';
-    statusTextEn = '⚠️ Groom 10th House Jeevana Mudakku Warning';
-    explanationTa = `⚠️ சுவடி சாஸ்திர எச்சரிக்கை: ஆணின் ஜன்ம லக்னத்திற்கு 10-ம் இடம் (${gMudakku.mudakkuRasiNameTa}) முடக்கு ராசியாக அமைந்துள்ளது. 10-ம் இடம் ஜீவன ஸ்தானம் / கர்ம ஸ்தானம் என்பதால், தொழில் முன்னேற்றம் மற்றும் குடும்ப பொறுப்புகளில் தாமதங்களை தவிர்க்க முடக்கு அதிபதி (${gMudakku.mudakkuLordTa}) வழிபாடு செய்ய வேண்டும். (பெண்ணிற்கு 9-ம் இடம் முடக்கு இல்லை - ${bMudakku.houseFromLagna}-ஆம் இடம்).`;
-    explanationEn = `⚠️ Manuscript Warning: Groom has Mudakku in the 10th house from Janma Lagna (${gMudakku.mudakkuRasiNameEn}), indicating Jeevana/Career Mudakku. Bride does not have 9th house Mudakku (Bride house: ${bMudakku.houseFromLagna}). Remedial guidance recommended.`;
+    status = 'CRITICAL';
+    statusTextTa = '🛑 பொருந்தாது (ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு - இணைக்கக் கூடாது)';
+    statusTextEn = '🛑 NOT MATCH (Groom 10th House Jeevana Mudakku)';
+    explanationTa = `🛑 பொருந்தாது (இணைக்கக் கூடாது)! சுவடி சாஸ்திர விதி: "பெண் லக்னத்திற்கு 9-ம் இடம் முடக்கு, ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு இருந்தால் இணைக்கக் கூடாது." ஆணின் ஜன்ம லக்னத்திற்கு 10-ம் இடம் (${gMudakku.mudakkuRasiNameTa}) ஜீவன / கர்ம முடக்காக அமைந்துள்ளது. 10-ம் இடம் தொழில் & கௌரவ ஸ்தானம் என்பதால், வாழ்வாதாரம் முடங்கும் என்பதால் இச்சேர்க்கை தவிர்க்கப்பட வேண்டும்!`;
+    explanationEn = `🛑 NOT MATCH! Manuscript Rule: "Bride 9th House Mudakku, Groom 10th House Mudakku should not be joined." Groom has Mudakku in the 10th house from Janma Lagna (${gMudakku.mudakkuRasiNameEn}), causing Jeevana/Career Mudakku. Alliance should be avoided.`;
   } else {
-    explanationTa = `✅ முடக்கு பாவக சுத்தி உத்தமம்! "பெண்ணிற்கு genma lakanam thiruku 9-ம் இடம் முடக்கும், ஆணிற்கு genma lakanam thiruku 10-ம் இடம் முடக்கும் இருக்கும் ஜாதகத்தை இணைக்கக் கூடாது" என்ற சுவடி விதிப்படி, பெண்ணிற்கு ${bMudakku.houseFromLagna}-ம் இடமும் (${bMudakku.mudakkuRasiNameTa}), ஆணிற்கு ${gMudakku.houseFromLagna}-ம் இடமும் (${gMudakku.mudakkuRasiNameTa}) முடக்காக அமைந்தது. 9-ல் பாக்கிய முடக்கோ, 10-ல் ஜீவன முடக்கோ இன்றி பாவக பலம் சுபமாக அமைந்துள்ளது.`;
+    explanationTa = `✅ முடக்கு பாவக சுத்தி உத்தமம்! "பெண் லக்னத்திற்கு 9-ம் இடம் முடக்கு, ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு இருந்தால் இணைக்கக் கூடாது" என்ற சுவடி விதிப்படி, பெண்ணிற்கு ${bMudakku.houseFromLagna}-ம் இடமும் (${bMudakku.mudakkuRasiNameTa}), ஆணிற்கு ${gMudakku.houseFromLagna}-ம் இடமும் (${gMudakku.mudakkuRasiNameTa}) முடக்காக அமைந்தது. பெண் லக்னத்திற்கு 9-ம் இட பாக்கிய முடக்கோ, ஆண் லக்னத்திற்கு 10-ம் இட ஜீவன முடக்கோ இன்றி பாவக பலம் சுபமாக அமைந்துள்ளது.`;
     explanationEn = `✅ Auspicious Mudakku Alignment! Bride Mudakku is in the ${bMudakku.houseFromLagna}th house, and Groom Mudakku is in the ${gMudakku.houseFromLagna}th house. Neither 9th Bhagya Mudakku nor 10th Jeevana Mudakku affliction is present.`;
   }
 
   return {
     ruleNumber: 5,
     ruleCode: 'BRIDE_9TH_GROOM_10TH_MUDAKKU_AVOIDANCE',
-    titleTa: '5. பெண் லக்னத்திற்கு 9-ம் இடம் & ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு விலக்கு விதி',
+    titleTa: '5. பெண் லக்னத்திற்கு 9-ம் இடம் முடக்கு, ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு இருந்தால் இணைக்கக் கூடாது',
     titleEn: '5. Bride 9th House & Groom 10th House Mudakku Avoidance Rule',
-    manuscriptQuoteTa: 'பெண்ணிற்கு genma lakanam thiruku 9-ம் இடம் முடக்கும், ஆணிற்கு genma lakanam thiruku 10-ம் இடம் முடக்கும் இருக்கும் ஜாதகத்தை இணைக்கக் கூடாது.',
+    manuscriptQuoteTa: 'பெண் லக்னத்திற்கு 9-ம் இடம் முடக்கு, ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு இருந்தால் இணைக்கக் கூடாது',
     bMudakku,
     gMudakku,
     isBride9thMudakku,
@@ -357,9 +357,7 @@ export function evaluateRule5_Bride9thGroom10thMudakkuAvoidance(bride, groom) {
     explanationTa,
     explanationEn,
     remedyTa: status === 'CRITICAL'
-      ? 'பெண்ணிற்கு 9-ம் இட பாக்கிய முடக்கும் ஆணிற்கு 10-ம் இட ஜீவன முடக்கும் ஒருசேர அமைவது இருவரின் வாழ்வாதாரத்தையும் முடக்கும் என்பதால் திருமணத்தைத் தவிர்ப்பது நல்லது (NOT MATCH). மீறி இணைக்க நேரிட்டால், திருக்கடையூர் அமிர்தகடேஸ்வரர் அல்லது திருவெண்காடு புதன் ஸ்தலத்தில் ஆயுள் & தொழில் அபிவிருத்தி சங்கல்ப பூஜை கட்டாயம் செய்ய வேண்டும்.'
-      : status === 'WARN'
-      ? 'பாதிக்கப்பட்ட முடக்கு அதிபதிக்குரிய கிழமைகளில் நவகிரக சன்னதியில் நெய்தீபம் ஏற்றி, குலதெய்வத்திற்கு அபிஷேகம் செய்து வழிபடவும்.'
+      ? 'பெண் லக்னத்திற்கு 9-ம் இடம் முடக்கு அல்லது ஆண் லக்னத்திற்கு 10-ம் இடம் முடக்கு அமைவது வாழ்வாதாரம் மற்றும் பாக்கியத்தை முடக்கும் என்பதால் திருமணத்தைத் தவிர்ப்பது நல்லது (NOT MATCH). மீறி இணைக்க நேரிட்டால், திருக்கடையூர் அமிர்தகடேஸ்வரர் அல்லது திருவெண்காடு புதன் ஸ்தலத்தில் ஆயுள் & தொழில் அபிவிருத்தி சங்கல்ப பூஜை கட்டாயம் செய்ய வேண்டும்.'
       : 'சிறப்பு பரிகாரம் தேவையில்லை.'
   };
 }
