@@ -203,9 +203,11 @@ export function evaluateMudakkuRules(bride, groom) {
   const isSameMudakkuLord = bMudakku.mudakkuLordId === gMudakku.mudakkuLordId;
 
   // Rule 2: 9th/10th House Mudakku (Bride 9th House, Groom 10th House)
+  // "பெண்ணிற்கு genma lakanam thiruku 9-ம் இடம் முடக்கும், ஆணிற்கு genma lakanam thiruku 10-ம் இடம் முடக்கும் இருக்கும் ஜாதகத்தை இணைக்கக் கூடாது."
   const isBride9thMudakku = bMudakku.houseFromLagna === 9;
   const isGroom10thMudakku = gMudakku.houseFromLagna === 10;
-  const is9th10thMudakkuConflict = isBride9thMudakku || isGroom10thMudakku;
+  const isBoth9th10thMudakku = isBride9thMudakku && isGroom10thMudakku;
+  const is9th10thMudakkuConflict = isBoth9th10thMudakku || isBride9thMudakku || isGroom10thMudakku;
 
   // Rule 3: Bride's Mudakku Lord in Groom's Rasi or Lagna
   const girlMudakkuInBoyCheck = checkGirlMudakkuInBoyRasiLagna(bride, groom);
@@ -218,12 +220,18 @@ export function evaluateMudakkuRules(bride, groom) {
   if (girlMudakkuInBoyCheck.hasConflict) {
     explanationTa = girlMudakkuInBoyCheck.explanationTa;
     explanationEn = girlMudakkuInBoyCheck.explanationEn;
+  } else if (isBoth9th10thMudakku) {
+    explanationTa = `🛑 9/10 முடக்கு விலக்கு தோஷம் (இணைக்கக் கூடாது)! சுவடி சாஸ்திர விதிப்படி: "பெண்ணிற்கு genma lakanam thiruku 9-ம் இடம் முடக்கும், ஆணிற்கு genma lakanam thiruku 10-ம் இடம் முடக்கும் இருக்கும் ஜாதகத்தை இணைக்கக் கூடாது." பெண் ஜாதகத்தில் 9-ல் பாக்கிய முடக்கும் (${bMudakku.mudakkuRasiNameTa}), ஆண் ஜாதகத்தில் 10-ல் ஜீவன முடக்கும் (${gMudakku.mudakkuRasiNameTa}) ஒருசேர அமைந்ததால் இச்சேர்க்கை தவிர்க்கப்பட வேண்டும்!`;
+    explanationEn = `🛑 9th/10th House Mudakku Conflict (Avoid Marriage)! Manuscript Rule: "Horoscopes where Bride has 9th house Mudakku from Janma Lagna and Groom has 10th house Mudakku from Janma Lagna must not be joined."`;
   } else if (isSameMudakkuLord) {
     explanationTa = `⚠️ முடக்கு அதிபதி தோஷம் (திருமணம் தவிர்க்கவும்)! பெண் (${bMudakku.mudakkuLordTa}) மற்றும் ஆண் (${gMudakku.mudakkuLordTa}) இருவருக்கும் ஒரே முடக்கு அதிபதி வருகிறது (எ.கா: ஆண் குரு, பெண் குரு). நாடிச் சுவடி சாஸ்திரப்படி இருவருக்கும் ஒரே முடக்கு அதிபதி அமைந்தால் திருமணம் தவிர்க்கப்பட வேண்டும்.`;
     explanationEn = `⚠️ Same Mudakku Lord Conflict (Avoid Marriage)! Both Bride and Groom share ${bMudakku.mudakkuLordEn} as Mudakku Adhipathi (e.g. Boy Guru & Girl Guru). Traditional Nadi manuscripts strictly advise avoiding marriage.`;
-  } else if (is9th10thMudakkuConflict) {
-    explanationTa = `⚠️ முடக்கு பாவ தோஷம்! பெண்ணிற்கு 9-ம் இடம் (${bMudakku.mudakkuRasiNameTa}) அல்லது ஆணிற்கு 10-ம் இடம் (${gMudakku.mudakkuRasiNameTa}) முடக்கு அமைப்பில் உள்ளது. சுவடி சாஸ்திரப்படி சேர்க்கக் கூடாது.`;
-    explanationEn = `⚠️ 9th/10th House Mudakku obstacle detected. Traditional manuscripts advise avoiding marriage.`;
+  } else if (isBride9thMudakku) {
+    explanationTa = `⚠️ முடக்கு பாவ தோஷம்! பெண்ணிற்கு ஜன்ம லக்னத்திற்கு 9-ம் இடம் (${bMudakku.mudakkuRasiNameTa}) பாக்கிய முடக்கு அமைப்பில் உள்ளது. சுவடி சாஸ்திரப்படி முடக்கு அதிபதி (${bMudakku.mudakkuLordTa}) வழிபாடு அவசியம்.`;
+    explanationEn = `⚠️ Bride 9th House Bhagya Mudakku obstacle detected. Remedial guidance recommended.`;
+  } else if (isGroom10thMudakku) {
+    explanationTa = `⚠️ முடக்கு பாவ தோஷம்! ஆணிற்கு ஜன்ம லக்னத்திற்கு 10-ம் இடம் (${gMudakku.mudakkuRasiNameTa}) ஜீவன முடக்கு அமைப்பில் உள்ளது. சுவடி சாஸ்திரப்படி தொழில் முன்னேற்றத்திற்கு பரிகாரம் அவசியம்.`;
+    explanationEn = `⚠️ Groom 10th House Jeevana Mudakku obstacle detected. Remedial guidance recommended.`;
   } else {
     explanationTa = `✅ முடக்கு அதிபதி பொருத்தம் உத்தமம். பெண் முடக்கு அதிபதி: ${bMudakku.mudakkuLordTa} (${bMudakku.mudakkuRasiNameTa}), ஆண் முடக்கு அதிபதி: ${gMudakku.mudakkuLordTa} (${gMudakku.mudakkuRasiNameTa}). ஆண் ராசி/லக்கினத்தில் பெண் முடக்கு அதிபதி அமையவில்லை. சுபமான அமைப்பாகும்.`;
     explanationEn = `✅ Safe Mudakku Adhipathi alignment. Bride Mudakku Lord: ${bMudakku.mudakkuLordEn} (${bMudakku.mudakkuRasiNameEn}), Groom Mudakku Lord: ${gMudakku.mudakkuLordEn} (${gMudakku.mudakkuRasiNameEn}). No Mudakku placement in Groom Rasi/Lagna.`;
@@ -233,6 +241,9 @@ export function evaluateMudakkuRules(bride, groom) {
     brideMudakku: bMudakku,
     groomMudakku: gMudakku,
     isSameMudakkuLord,
+    isBride9thMudakku,
+    isGroom10thMudakku,
+    isBoth9th10thMudakku,
     is9th10thMudakkuConflict,
     girlMudakkuInBoyCheck,
     hasMudakkuConflict,

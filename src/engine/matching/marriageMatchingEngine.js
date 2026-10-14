@@ -32,7 +32,7 @@ export function calculateMarriageMatching(bride, groom) {
   // 7. திருமண பொருத்தத்தின் சாராம்ச விதிகள் (10 Essence Manuscript Rules Engine)
   const saaraamsaResult = evaluateSaaraamsaVidhigal(bride, groom);
 
-  // 8. சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள் (4 Classical Tithi & Mudakku Rules)
+  // 8. சுவடி சாஸ்திர 5 திதி & முடக்கு விதிகள் (5 Classical Tithi & Mudakku Rules)
   const thithiResult = evaluateAllThithiAndMudakkuRules(bride, groom);
 
   // ==========================================

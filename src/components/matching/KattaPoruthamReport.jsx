@@ -122,6 +122,30 @@ export default function KattaPoruthamReport({ bride, groom, lang }) {
             </span>
           </div>
         )}
+
+        {/* Specific Rule: Bride 9th House & Groom 10th House Mudakku Check */}
+        <div className={`p-3 rounded-xl border text-xs flex items-center justify-between gap-3 ${
+          mudakkuResult.isBoth9th10thMudakku
+            ? 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+            : mudakkuResult.isBride9thMudakku || mudakkuResult.isGroom10thMudakku
+            ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+            : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+        }`}>
+          <span className="font-semibold">
+            {lang === 'ta' 
+              ? 'சுவடி சாஸ்திர விதி: பெண்ணிற்கு 9-ம் இடம் & ஆணிற்கு 10-ம் இடம் முடக்கு சேர்க்கை விலக்கு' 
+              : 'Manuscript Rule: Bride 9th & Groom 10th House Mudakku Avoidance'}
+          </span>
+          <span className="font-bold shrink-0">
+            {mudakkuResult.isBoth9th10thMudakku
+              ? (lang === 'ta' ? '🛑 விலக்கு (இணைக்கக் கூடாது)' : '🛑 Forbidden')
+              : mudakkuResult.isBride9thMudakku
+              ? (lang === 'ta' ? '⚠️ பெண் 9-ல் முடக்கு' : '⚠️ Bride 9th Mudakku')
+              : mudakkuResult.isGroom10thMudakku
+              ? (lang === 'ta' ? '⚠️ ஆண் 10-ல் முடக்கு' : '⚠️ Groom 10th Mudakku')
+              : (lang === 'ta' ? '✅ சுபம் (இல்லை)' : '✅ Auspicious')}
+          </span>
+        </div>
       </div>
 
       {/* Grid Section 2: Badhaka Analysis */}

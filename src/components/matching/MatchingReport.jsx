@@ -270,13 +270,13 @@ export default function MatchingReport({ matchingData, lang, onPrint }) {
           </div>
         )}
 
-        {/* Section 6: சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள் (4 Tithi & Mudakku Manuscript Rules) */}
+        {/* Section 6: சுவடி சாஸ்திர 5 திதி & முடக்கு விதிகள் (5 Tithi & Mudakku Manuscript Rules) */}
         {thithiResult && (
           <div className="mb-6">
             <h2 className="text-sm font-bold text-amber-900 border-b border-amber-300 pb-1 mb-3 uppercase tracking-wider flex items-center justify-between">
-              <span>{lang === 'ta' ? '6. சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள்' : '6. 4 Classical Tithi & Mudakku Manuscript Rules'}</span>
+              <span>{lang === 'ta' ? '6. சுவடி சாஸ்திர 5 திதி & முடக்கு விதிகள்' : '6. 5 Classical Tithi & Mudakku Manuscript Rules'}</span>
               <span className="text-xs font-mono font-bold text-amber-800">
-                {thithiResult.passedCount} / {thithiResult.totalRules || 4} {lang === 'ta' ? 'சுபம்' : 'Passed'} ({thithiResult.scorePercent}%)
+                {thithiResult.passedCount} / {thithiResult.totalRules || 5} {lang === 'ta' ? 'சுபம்' : 'Passed'} ({thithiResult.scorePercent}%)
               </span>
             </h2>
             <table className="w-full text-xs border-collapse border border-slate-300">

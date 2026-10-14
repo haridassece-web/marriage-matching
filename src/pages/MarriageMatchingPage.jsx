@@ -207,7 +207,7 @@ export default function MarriageMatchingPage() {
               }`}
             >
               <Moon className="w-4 h-4 text-cyan-400" />
-              <span>{lang === 'ta' ? '🌙 4 திதி & முடக்கு விதிகள்' : '4 Tithi & Mudakku Rules'}</span>
+              <span>{lang === 'ta' ? '🌙 5 திதி & முடக்கு விதிகள்' : '5 Tithi & Mudakku Rules'}</span>
               {matchingData.thithiResult?.criticalCount > 0 ? (
                 <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
               ) : matchingData.thithiResult?.warningCount > 0 ? (
@@ -379,7 +379,7 @@ export default function MarriageMatchingPage() {
           </div>
         )}
 
-        {/* Tab: சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள் (4 Classical Tithi & Mudakku Rules View) */}
+        {/* Tab: சுவடி சாஸ்திர 5 திதி & முடக்கு விதிகள் (5 Classical Tithi & Mudakku Rules View) */}
         {activeTab === 'THITHI_MUDAKKU' && (
           <div className="animate-fadeIn">
             <ThithiRulesReport bride={bride} groom={groom} lang={lang} />

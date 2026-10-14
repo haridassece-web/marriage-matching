@@ -53,12 +53,12 @@ export default function ThithiRulesReport({ bride, groom, lang = 'ta' }) {
               </span>
             </div>
             <h3 className="text-xl font-black text-amber-100 flex items-center gap-2">
-              <span>{lang === 'ta' ? 'சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள்' : '4 Classical Tithi & Mudakku Manuscript Rules'}</span>
+              <span>{lang === 'ta' ? 'சுவடி சாஸ்திர 5 திதி & முடக்கு விதிகள்' : '5 Classical Tithi & Mudakku Manuscript Rules'}</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               {lang === 'ta' 
-                ? '4, 8, 14 திதி சரிக்கைக் கூடாது, ஏக ஜன்ம திதி, பெண் முடக்கு அதிபதி & துவாதசி-அமாவாசை/பௌர்ணமி சுவடி விதிகள்'
-                : '4-8-14 Riktha, Eka Janma Tithi, Bride Mudakku Lord in Groom Rasi/Lagna & Thuvadasi-Amavasya/Pournami Rules'}
+                ? '4, 8, 14 திதி சரிக்கைக் கூடாது, ஏக ஜன்ம திதி, பெண் முடக்கு அதிபதி, துவாதசி-அமாவாசை/பௌர்ணமி & 9/10 முடக்கு சுவடி விதிகள்'
+                : '4-8-14 Riktha, Eka Janma Tithi, Bride Mudakku Lord, Thuvadasi-Amavasya/Pournami & 9/10 Mudakku Avoidance Rules'}
             </p>
           </div>
         </div>
@@ -233,7 +233,7 @@ export default function ThithiRulesReport({ bride, groom, lang = 'ta' }) {
                     </div>
                   )}
 
-                  {rule.bMudakku && (
+                  {rule.ruleNumber === 3 && rule.bMudakku && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-[11px]">
                       <div>
                         <span className="text-slate-400 block">பெண் முடக்கு விவரம்:</span>
@@ -243,6 +243,35 @@ export default function ThithiRulesReport({ bride, groom, lang = 'ta' }) {
                         <span className="text-slate-400 block">ஆண் ஜாதகத்தில் நிலை:</span>
                         <strong className={`${rule.hasConflict ? 'text-rose-400' : 'text-emerald-400'} text-xs`}>
                           {rule.hasConflict ? '🛑 ராசி அல்லது லக்கினத்தில் வரக்கூடாது' : '✅ ராசி/லக்கினத்தில் அமையவில்லை (சுபம்)'}
+                        </strong>
+                      </div>
+                    </div>
+                  )}
+
+                  {rule.ruleNumber === 5 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-[11px]">
+                      <div>
+                        <span className="text-slate-400 block">பெண் முடக்கு இடம் (லக்னத்திலிருந்து):</span>
+                        <strong className={`text-xs ${rule.isBride9thMudakku ? 'text-rose-400 font-bold' : 'text-slate-200'}`}>
+                          {rule.bMudakku?.houseFromLagna}-ஆம் இடம் ({rule.bMudakku?.mudakkuRasiNameTa})
+                          {rule.isBride9thMudakku ? ' (🛑 9-ல் பாக்கிய முடக்கு)' : ''}
+                        </strong>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block">ஆண் முடக்கு இடம் (லக்னத்திலிருந்து):</span>
+                        <strong className={`text-xs ${rule.isGroom10thMudakku ? 'text-rose-400 font-bold' : 'text-slate-200'}`}>
+                          {rule.gMudakku?.houseFromLagna}-ஆம் இடம் ({rule.gMudakku?.mudakkuRasiNameTa})
+                          {rule.isGroom10thMudakku ? ' (🛑 10-ல் ஜீவன முடக்கு)' : ''}
+                        </strong>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block">9/10 முடக்கு சேர்க்கை நிலை:</span>
+                        <strong className={`text-xs ${rule.status === 'CRITICAL' ? 'text-rose-400 font-black' : rule.status === 'WARN' ? 'text-amber-300' : 'text-emerald-400'}`}>
+                          {rule.status === 'CRITICAL'
+                            ? '🛑 இணைக்கக் கூடாது (இருவருக்கும் 9/10 முடக்கு)'
+                            : rule.status === 'WARN'
+                            ? (rule.isBride9thMudakku ? '⚠️ பெண் 9-ல் முடக்கு' : '⚠️ ஆண் 10-ல் முடக்கு')
+                            : '✅ சுபம் (9/10 முடக்கு இல்லை)'}
                         </strong>
                       </div>
                     </div>
@@ -287,6 +316,7 @@ export default function ThithiRulesReport({ bride, groom, lang = 'ta' }) {
           <li><strong>ஏக ஜன்ம திதி விலக்கு:</strong> ஆண் மற்றும் பெண் இருவருக்கும் ஒரே ஜன்ம திதி இருக்கக்கூடாது (ஏக திதி தோஷம்). ஒரே திதி அமைந்தால் வம்ச விருத்தி, தம்பதியர் ஒற்றுமை குறையும் என்பதால் தவிர்க்கப்பட வேண்டும்.</li>
           <li><strong>பெண் முடக்கு அதிபதி ஆண் ராசி/லக்னம் விலக்கு:</strong> பெண்ணின் முடக்கு அதிபதி கிரகமானது ஆணின் சந்திர ராசியிலோ அல்லது லக்கினத்திலோ அமரக்கூடாது, மற்றும் ஆணின் ராசி நாதனாகவோ லக்ன நாதனாகவோ வரக்கூடாது. இது ஆணின் வாழ்வாதாரத்தை முடக்கும்.</li>
           <li><strong>பெண் துவாதசி - ஆண் அமாவாசை/பௌர்ணமி விலக்கு:</strong> துவாதசி (12-வது திதி) திதியில் பிறந்த பெண்ணிற்கு, அமாவாசை அல்லது பௌர்ணமி திதியில் பிறந்த ஆணைத் திருமணம் செய்யக்கூடாது.</li>
+          <li><strong>பெண் 9-ம் இடம் & ஆண் 10-ம் இடம் முடக்கு விலக்கு:</strong> பெண்ணிற்கு ஜன்ம லக்னத்திற்கு 9-ம் இடம் முடக்காகவும், ஆணிற்கு ஜன்ம லக்னத்திற்கு 10-ம் இடம் முடக்காகவும் இருக்கும் ஜாதகத்தை இணைக்கக் கூடாது ("பெண்ணிற்கு genma lakanam thiruku 9-ம் இடம் முடக்கும், ஆணிற்கு genma lakanam thiruku 10-ம் இடம் முடக்கும் இருக்கும் ஜாதகத்தை இணைக்கக் கூடாது").</li>
         </ul>
       </div>
 
