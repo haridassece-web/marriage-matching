@@ -187,7 +187,7 @@ export default function MarriageMatchingPage() {
               }`}
             >
               <Scroll className="w-4 h-4 text-cyan-400" />
-              <span>{lang === 'ta' ? '📜 6 சாராம்ச விதிகள்' : '6 Essence Rules'}</span>
+              <span>{lang === 'ta' ? '📜 10 சாராம்ச & திதி விதிகள்' : '10 Essence & Tithi Rules'}</span>
               {matchingData.saaraamsaResult?.criticalCount > 0 ? (
                 <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
               ) : matchingData.saaraamsaResult?.warningCount > 0 ? (

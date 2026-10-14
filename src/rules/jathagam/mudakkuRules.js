@@ -84,6 +84,115 @@ export function getMudakkuInfo(personOrLagna, inputMoonStarId = null, inputSunSt
 }
 
 /**
+ * Rule 3: Bride's Mudakku Adhipathi in Groom's Rasi or Lagna Rule
+ * "for girl muddku athi pathi for boy jathakam rasi and lankanam vara kudathu"
+ * - Bride's Mudakku Lord must not be placed in Groom's Janma Rasi or Lagna
+ * - Groom's Janma Rasi lord or Lagna lord must not be Bride's Mudakku Lord
+ */
+export function checkGirlMudakkuInBoyRasiLagna(bride, groom) {
+  const bMudakku = getMudakkuInfo(bride);
+  const gRasiId = Number(groom.rasiId || 1);
+  const gLagnaId = Number(groom.lagnaRasiId || groom.rasiId || 1);
+
+  const gRasiInfo = getRasiById(gRasiId);
+  const gLagnaInfo = getRasiById(gLagnaId);
+
+  // Map lordId 1..7 to planet code
+  const lordCodeMap = {
+    1: 'SUN',
+    2: 'MOON',
+    3: 'MARS',
+    4: 'MERC',
+    5: 'JUP',
+    6: 'VEN',
+    7: 'SAT'
+  };
+
+  const targetCode = lordCodeMap[bMudakku.mudakkuLordId];
+
+  // Find where this planet is situated in Groom's chart
+  let planetInGroomRasiId = null;
+  if (groom.allGrahas && Array.isArray(groom.allGrahas)) {
+    const foundGraha = groom.allGrahas.find(g => g.code === targetCode);
+    if (foundGraha) {
+      planetInGroomRasiId = Number(foundGraha.rasiId);
+    }
+  } else {
+    const codeKeyMap = {
+      'SUN': groom.sunRasiId,
+      'MOON': groom.rasiId,
+      'MARS': groom.marsRasiId,
+      'MERC': groom.mercuryRasiId,
+      'JUP': groom.jupiterRasiId,
+      'VEN': groom.venusRasiId,
+      'SAT': groom.saturnRasiId
+    };
+    if (codeKeyMap[targetCode]) {
+      planetInGroomRasiId = Number(codeKeyMap[targetCode]);
+    }
+  }
+
+  // Check 1: Is Bride's Mudakku Lord planet placed in Groom's Janma Rasi (Moon Sign)?
+  const isMudakkuLordInGroomRasi = (planetInGroomRasiId !== null && planetInGroomRasiId === gRasiId);
+
+  // Check 2: Is Bride's Mudakku Lord planet placed in Groom's Janma Lagna (Ascendant)?
+  const isMudakkuLordInGroomLagna = (planetInGroomRasiId !== null && planetInGroomRasiId === gLagnaId);
+
+  // Check 3: Is Groom's Janma Rasi lord itself the Bride's Mudakku Lord?
+  const isGroomRasiLordMudakku = (gRasiInfo.lordId === bMudakku.mudakkuLordId);
+
+  // Check 4: Is Groom's Janma Lagna lord itself the Bride's Mudakku Lord?
+  const isGroomLagnaLordMudakku = (gLagnaInfo.lordId === bMudakku.mudakkuLordId);
+
+  const hasConflict = isMudakkuLordInGroomRasi || isMudakkuLordInGroomLagna || isGroomRasiLordMudakku || isGroomLagnaLordMudakku;
+
+  let explanationTa = '';
+  let explanationEn = '';
+  const reasonTa = [];
+  const reasonEn = [];
+
+  if (isMudakkuLordInGroomRasi) {
+    reasonTa.push(`பெண்ணின் முடக்கு அதிபதியான ${bMudakku.mudakkuLordTa}, ஆணின் சந்திர ராசியில் (${gRasiInfo.nameTa}) அமர்ந்துள்ளார்`);
+    reasonEn.push(`Bride's Mudakku Lord (${bMudakku.mudakkuLordEn}) is placed in Groom's Janma Rasi (${gRasiInfo.nameEn})`);
+  }
+  if (isMudakkuLordInGroomLagna) {
+    reasonTa.push(`பெண்ணின் முடக்கு அதிபதியான ${bMudakku.mudakkuLordTa}, ஆணின் லக்கினத்தில் (${gLagnaInfo.nameTa}) அமர்ந்துள்ளார்`);
+    reasonEn.push(`Bride's Mudakku Lord (${bMudakku.mudakkuLordEn}) is placed in Groom's Janma Lagna (${gLagnaInfo.nameEn})`);
+  }
+  if (isGroomRasiLordMudakku) {
+    reasonTa.push(`ஆணின் ராசி நாதனே (${gRasiInfo.lordTa}) பெண்ணின் முடக்கு அதிபதியாக வந்துள்ளார்`);
+    reasonEn.push(`Groom's Rasi Lord (${gRasiInfo.lordEn}) is the Bride's Mudakku Lord`);
+  }
+  if (isGroomLagnaLordMudakku) {
+    reasonTa.push(`ஆணின் லக்கின நாதனே (${gLagnaInfo.lordTa}) பெண்ணின் முடக்கு அதிபதியாக வந்துள்ளார்`);
+    reasonEn.push(`Groom's Lagna Lord (${gLagnaInfo.lordEn}) is the Bride's Mudakku Lord`);
+  }
+
+  if (hasConflict) {
+    explanationTa = `🛑 பெண் முடக்கு அதிபதி தோஷம் (சேர்க்கக் கூடாது)! சுவடி சாஸ்திர விதிப்படி: "பெண்ணின் முடக்கு அதிபதி ஆணின் ஜாதகத்தில் ராசி மற்றும் லக்கினத்தில் வரக்கூடாது." ${reasonTa.join('; ')}. இது ஆணின் வாழ்வாதாரம், ஆயுள்-ஆரோக்கியம் மற்றும் குடும்ப முன்னேற்றத்தை முடக்கும் என்பதால் திருமணம் தவிர்க்கப்பட வேண்டும்!`;
+    explanationEn = `🛑 Bride's Mudakku Lord Conflict (Avoid Alliance)! Manuscript Rule: "Bride's Mudakku Lord must not appear in Groom's Horoscope Rasi or Lagna." ${reasonEn.join('; ')}. This paralyzes the groom's fortune and health.`;
+  } else {
+    explanationTa = `✅ பெண் முடக்கு அதிபதி சுபம்! பெண்ணின் முடக்கு அதிபதியான ${bMudakku.mudakkuLordTa} (${bMudakku.mudakkuRasiNameTa}), ஆணின் ராசியிலோ (${gRasiInfo.nameTa}) அல்லது லக்கினத்திலோ (${gLagnaInfo.nameTa}) அமையவில்லை. சுவடி விதிப்படி உத்தம அமைப்பாகும்.`;
+    explanationEn = `✅ Auspicious Alignment! Bride's Mudakku Lord (${bMudakku.mudakkuLordEn}) does not occupy or rule Groom's Rasi (${gRasiInfo.nameEn}) or Lagna (${gLagnaInfo.nameEn}).`;
+  }
+
+  return {
+    bMudakku,
+    planetInGroomRasiId,
+    isMudakkuLordInGroomRasi,
+    isMudakkuLordInGroomLagna,
+    isGroomRasiLordMudakku,
+    isGroomLagnaLordMudakku,
+    hasConflict,
+    explanationTa,
+    explanationEn,
+    remedyTa: hasConflict
+      ? 'வியாழக்கிழமைகளில் தட்சிணாமூர்த்தி வழிபாடு மற்றும் முடக்கு அதிபதி கிரகத்திற்குரிய ஸ்தலத்தில் பரிகார அர்ச்சனை செய்யவும்.'
+      : 'சிறப்பு பரிகாரம் தேவையில்லை.'
+  };
+}
+
+/**
  * Main Mudakku Rules Evaluation function for Bride & Groom
  */
 export function evaluateMudakkuRules(bride, groom) {
@@ -98,20 +207,26 @@ export function evaluateMudakkuRules(bride, groom) {
   const isGroom10thMudakku = gMudakku.houseFromLagna === 10;
   const is9th10thMudakkuConflict = isBride9thMudakku || isGroom10thMudakku;
 
-  const hasMudakkuConflict = isSameMudakkuLord || is9th10thMudakkuConflict;
+  // Rule 3: Bride's Mudakku Lord in Groom's Rasi or Lagna
+  const girlMudakkuInBoyCheck = checkGirlMudakkuInBoyRasiLagna(bride, groom);
+
+  const hasMudakkuConflict = isSameMudakkuLord || is9th10thMudakkuConflict || girlMudakkuInBoyCheck.hasConflict;
 
   let explanationTa = '';
   let explanationEn = '';
 
-  if (isSameMudakkuLord) {
+  if (girlMudakkuInBoyCheck.hasConflict) {
+    explanationTa = girlMudakkuInBoyCheck.explanationTa;
+    explanationEn = girlMudakkuInBoyCheck.explanationEn;
+  } else if (isSameMudakkuLord) {
     explanationTa = `⚠️ முடக்கு அதிபதி தோஷம் (திருமணம் தவிர்க்கவும்)! பெண் (${bMudakku.mudakkuLordTa}) மற்றும் ஆண் (${gMudakku.mudakkuLordTa}) இருவருக்கும் ஒரே முடக்கு அதிபதி வருகிறது (எ.கா: ஆண் குரு, பெண் குரு). நாடிச் சுவடி சாஸ்திரப்படி இருவருக்கும் ஒரே முடக்கு அதிபதி அமைந்தால் திருமணம் தவிர்க்கப்பட வேண்டும்.`;
     explanationEn = `⚠️ Same Mudakku Lord Conflict (Avoid Marriage)! Both Bride and Groom share ${bMudakku.mudakkuLordEn} as Mudakku Adhipathi (e.g. Boy Guru & Girl Guru). Traditional Nadi manuscripts strictly advise avoiding marriage.`;
   } else if (is9th10thMudakkuConflict) {
     explanationTa = `⚠️ முடக்கு பாவ தோஷம்! பெண்ணிற்கு 9-ம் இடம் (${bMudakku.mudakkuRasiNameTa}) அல்லது ஆணிற்கு 10-ம் இடம் (${gMudakku.mudakkuRasiNameTa}) முடக்கு அமைப்பில் உள்ளது. சுவடி சாஸ்திரப்படி சேர்க்கக் கூடாது.`;
     explanationEn = `⚠️ 9th/10th House Mudakku obstacle detected. Traditional manuscripts advise avoiding marriage.`;
   } else {
-    explanationTa = `✅ முடக்கு அதிபதி பொருத்தம் உத்தமம். பெண் முடக்கு அதிபதி: ${bMudakku.mudakkuLordTa} (${bMudakku.mudakkuRasiNameTa}), ஆண் முடக்கு அதிபதி: ${gMudakku.mudakkuLordTa} (${gMudakku.mudakkuRasiNameTa}). இருவருக்கும் வெவ்வேறு முடக்கு அதிபதிகள் வந்துள்ளதால் சுபமான அமைப்பாகும்.`;
-    explanationEn = `✅ Safe Mudakku Adhipathi alignment. Bride Mudakku Lord: ${bMudakku.mudakkuLordEn} (${bMudakku.mudakkuRasiNameEn}), Groom Mudakku Lord: ${gMudakku.mudakkuLordEn} (${gMudakku.mudakkuRasiNameEn}). Different Mudakku Lords (Auspicious).`;
+    explanationTa = `✅ முடக்கு அதிபதி பொருத்தம் உத்தமம். பெண் முடக்கு அதிபதி: ${bMudakku.mudakkuLordTa} (${bMudakku.mudakkuRasiNameTa}), ஆண் முடக்கு அதிபதி: ${gMudakku.mudakkuLordTa} (${gMudakku.mudakkuRasiNameTa}). ஆண் ராசி/லக்கினத்தில் பெண் முடக்கு அதிபதி அமையவில்லை. சுபமான அமைப்பாகும்.`;
+    explanationEn = `✅ Safe Mudakku Adhipathi alignment. Bride Mudakku Lord: ${bMudakku.mudakkuLordEn} (${bMudakku.mudakkuRasiNameEn}), Groom Mudakku Lord: ${gMudakku.mudakkuLordEn} (${gMudakku.mudakkuRasiNameEn}). No Mudakku placement in Groom Rasi/Lagna.`;
   }
 
   return {
@@ -119,6 +234,7 @@ export function evaluateMudakkuRules(bride, groom) {
     groomMudakku: gMudakku,
     isSameMudakkuLord,
     is9th10thMudakkuConflict,
+    girlMudakkuInBoyCheck,
     hasMudakkuConflict,
     explanationTa,
     explanationEn

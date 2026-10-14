@@ -52,16 +52,16 @@ export default function SaaraamsaVidhigalReport({ bride, groom, lang = 'ta' }) {
                 {lang === 'ta' ? 'சுவடி சாஸ்திர விதிகள்' : 'Palm-Leaf Astrological Rules'}
               </span>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono">
-                6 Essence Rules
+                {totalRules} Essence Rules
               </span>
             </div>
             <h3 className="text-xl font-black text-amber-100 flex items-center gap-2">
-              <span>{lang === 'ta' ? 'திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள்' : '6 Essence Rules of Marriage Matching'}</span>
+              <span>{lang === 'ta' ? `திருமண பொருத்தத்தின் ${totalRules} சாராம்ச & திதி விதிகள்` : `${totalRules} Essence & Tithi Rules of Marriage Matching`}</span>
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               {lang === 'ta' 
-                ? 'சம சப்தம லக்னம், ஒரே ராசி/லக்னம், ஒரே திசை (3,5,7 திசை), பாதகாதிபதி, உபய லக்னம் & 1-4 விலக்கு சுவடி விதிகள்'
-                : 'Sama Saptama Lagna, Same/Odd Signs, Same Dasa (3,5,7 Dasas), Badhaka, Ubhaya Lagna & 1-4 Placement Core Rules'}
+                ? 'சம சப்தம லக்னம், 1-4 விலக்கு, 4-8-14 திதி விலக்கு, ஏக திதி, பெண் முடக்கு அதிபதி & துவாதசி-அமாவாசை/பௌர்ணமி சுவடி சாஸ்திர விதிகள்'
+                : 'Sama Saptama, 1-4 Placement, 4-8-14 Tithi, Eka Tithi, Bride Mudakku Lord & Thuvadasi-Amavasya/Pournami Palm-Leaf Rules'}
             </p>
           </div>
         </div>

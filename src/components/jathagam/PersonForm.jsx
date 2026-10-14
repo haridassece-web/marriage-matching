@@ -29,6 +29,12 @@ export default function PersonForm({ title, person, onChange, colorTheme = 'ambe
           rasiPlanetsMap: calc.rasiPlanetsMap,
           navamsamPlanetsMap: calc.navamsamPlanetsMap,
           allGrahas: calc.allGrahas,
+          tithi: calc.tithi,
+          tithiIndex: calc.tithiIndex,
+          tithiNumber: calc.tithiNumber,
+          tithiNameTa: calc.tithiNameTa,
+          tithiNameEn: calc.tithiNameEn,
+          isShukla: calc.isShukla,
           yogamNameTa: calc.yogam.nameTa,
           karanamNameTa: calc.karanam.nameTa,
           dhasaLordObj: calc.dhasaLordObj,
@@ -175,9 +181,9 @@ export default function PersonForm({ title, person, onChange, colorTheme = 'ambe
               <div><strong>ராசி (Moon Sign):</strong> <span className="text-amber-300 font-bold">{panchangam.rasiNameTa}</span></div>
               <div><strong>லக்னம் (Lagna):</strong> <span className="text-rose-300 font-bold">{panchangam.lagnaNameTa}</span></div>
               <div><strong>நட்சத்திரம்:</strong> <span className="text-amber-300 font-bold">{panchangam.nakshatraNameTa} ({panchangam.pada}-ஆம் பாதம்)</span></div>
+              <div><strong>திதி (Tithi):</strong> <span className="text-cyan-300 font-bold">{panchangam.tithi?.fullNameTa || 'சுப திதி'}</span></div>
               <div><strong>யோகம்:</strong> <span className="text-yellow-300">{panchangam.yogam.nameTa} ({panchangam.yogam.nature})</span></div>
               <div><strong>கரணம்:</strong> <span className="text-emerald-300">{panchangam.karanam.nameTa}</span></div>
-              <div><strong>அனைத்து 9 கிரகங்கள்:</strong> <span className="text-cyan-300">கணக்கிடப்பட்டன</span></div>
             </div>
 
             <div className="text-amber-300 font-bold pt-1.5 border-t border-amber-500/20 text-xs">

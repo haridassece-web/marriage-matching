@@ -6,6 +6,7 @@ import { evaluateMudakkuRules } from '../../rules/jathagam/mudakkuRules';
 import { evaluateSpecialMarriageRules } from '../../rules/jathagam/specialRulesEngine';
 import { evaluateProgenyAndSpecialRules } from '../../rules/jathagam/progenyAndSpecialRulesEngine';
 import { evaluateSaaraamsaVidhigal } from '../../rules/jathagam/saaraamsaVidhigalEngine';
+import { evaluateAllThithiAndMudakkuRules } from '../../rules/jathagam/thithiRules';
 
 export function calculateMarriageMatching(bride, groom) {
   // 1. 11 Poruthams Engine
@@ -28,8 +29,11 @@ export function calculateMarriageMatching(bride, groom) {
   // 6. Progeny Engine
   const progenyResult = evaluateProgenyAndSpecialRules(bride, groom);
 
-  // 7. திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள் (6 Essence Manuscript Rules Engine)
+  // 7. திருமண பொருத்தத்தின் சாராம்ச விதிகள் (10 Essence Manuscript Rules Engine)
   const saaraamsaResult = evaluateSaaraamsaVidhigal(bride, groom);
+
+  // 8. சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள் (4 Classical Tithi & Mudakku Rules)
+  const thithiResult = evaluateAllThithiAndMudakkuRules(bride, groom);
 
   // ==========================================
   // COMPREHENSIVE OVERALL % CALCULATION ENGINE
@@ -87,12 +91,12 @@ export function calculateMarriageMatching(bride, groom) {
   let gradeEn = 'Uttamam - Highly Recommended';
   let badgeColor = 'emerald';
 
-  if (rajjuFailed || vedhaFailed || overallPercentage < 50 || saaraamsaResult.criticalCount > 0) {
+  if (rajjuFailed || vedhaFailed || overallPercentage < 50 || saaraamsaResult.criticalCount > 0 || thithiResult.criticalCount > 0) {
     grade = 'ADHAMAM';
     gradeTa = 'அதமம் - பொருத்தம் இல்லை (Not Recommended)';
     gradeEn = 'Adhamam - Mismatch / Not Recommended';
     badgeColor = 'rose';
-  } else if (overallPercentage < 70 || !dhosams9Analysis.isBalanceMatched || saaraamsaResult.warningCount > 1) {
+  } else if (overallPercentage < 70 || !dhosams9Analysis.isBalanceMatched || saaraamsaResult.warningCount > 1 || thithiResult.warningCount > 0) {
     grade = 'MADHYAMAM';
     gradeTa = 'மத்தியமம் - பரிகாரங்களுடன் செய்யலாம் (Moderate Match)';
     gradeEn = 'Madhyamam - Moderate Match (Remedies Advised)';
@@ -108,6 +112,11 @@ export function calculateMarriageMatching(bride, groom) {
   }
   if (mudakkuResult.hasMudakkuConflict) {
     warnings.push({ type: 'MUDAKKU', msgTa: mudakkuResult.explanationTa, msgEn: mudakkuResult.explanationEn });
+  }
+  if (thithiResult.criticalCount > 0) {
+    warnings.push({ type: 'THITHI_CRITICAL', msgTa: `🛑 ${thithiResult.overallStatusTa}`, msgEn: `🛑 ${thithiResult.overallStatusEn}` });
+  } else if (thithiResult.warningCount > 0) {
+    warnings.push({ type: 'THITHI_WARN', msgTa: `⚠️ ${thithiResult.overallStatusTa}`, msgEn: `⚠️ ${thithiResult.overallStatusEn}` });
   }
   if (saaraamsaResult.criticalCount > 0) {
     warnings.push({ type: 'SAARAAMSA_CRITICAL', msgTa: `🛑 ${saaraamsaResult.overallStatusTa}`, msgEn: `🛑 ${saaraamsaResult.overallStatusEn}` });
@@ -126,6 +135,7 @@ export function calculateMarriageMatching(bride, groom) {
     specialResult,
     progenyResult,
     saaraamsaResult,
+    thithiResult,
     summary: {
       totalScore: totalPoruthamScore,
       maxPossibleScore: 11,

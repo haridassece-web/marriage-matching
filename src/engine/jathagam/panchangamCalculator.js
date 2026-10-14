@@ -131,22 +131,86 @@ export const YOGAS = NITYA_YOGAS.map(y => ({
   nature: y.nature
 }));
 
-export const TITHI_NAMES = [
-  "பிரதமை (Prathama)",
-  "துவிதியை (Dvitiya)",
-  "திருதியை (Tritiya)",
-  "சதுர்த்தி (Chaturthi)",
-  "பஞ்சமி (Panchami)",
-  "சஷ்டி (Shashti)",
-  "சப்தமி (Saptami)",
-  "அஷ்டமி (Ashtami)",
-  "நவமி (Navami)",
-  "தசமி (Dashami)",
-  "ஏகாதசி (Ekadashi)",
-  "துவாதசி (Dvadashi)",
-  "திரயோதசி (Trayodashi)",
-  "சதுர்தசி (Chaturdashi)"
+export const TITHI_BASE_NAMES = [
+  { number: 1, nameTa: "பிரதமை", nameEn: "Prathama" },
+  { number: 2, nameTa: "துவிதியை", nameEn: "Dvitiya" },
+  { number: 3, nameTa: "திருதியை", nameEn: "Tritiya" },
+  { number: 4, nameTa: "சதுர்த்தி", nameEn: "Chaturthi" },
+  { number: 5, nameTa: "பஞ்சமி", nameEn: "Panchami" },
+  { number: 6, nameTa: "சஷ்டி", nameEn: "Shashti" },
+  { number: 7, nameTa: "சப்தமி", nameEn: "Saptami" },
+  { number: 8, nameTa: "அஷ்டமி", nameEn: "Ashtami" },
+  { number: 9, nameTa: "நவமி", nameEn: "Navami" },
+  { number: 10, nameTa: "தசமி", nameEn: "Dashami" },
+  { number: 11, nameTa: "ஏகாதசி", nameEn: "Ekadashi" },
+  { number: 12, nameTa: "துவாதசி", nameEn: "Dvadashi" },
+  { number: 13, nameTa: "திரயோதசி", nameEn: "Trayodashi" },
+  { number: 14, nameTa: "சதுர்தசி", nameEn: "Chaturdashi" },
+  { number: 15, nameTa: "பௌர்ணமி / அமாவாசை", nameEn: "Pournami / Amavasya" }
 ];
+
+export const TITHI_NAMES = TITHI_BASE_NAMES.map(t => `${t.nameTa} (${t.nameEn})`);
+
+export function calculateTithiFromDiff(diff) {
+  const normDiff = ((diff % 360) + 360) % 360;
+  const tithiIndex = Math.floor(normDiff / 12); // 0 to 29
+  const isShukla = tithiIndex < 15;
+  const number = (tithiIndex % 15) + 1; // 1 to 15
+  const progressInTithi = (normDiff % 12) / 12;
+
+  let baseNameTa = '';
+  let baseNameEn = '';
+  let fullNameTa = '';
+  let fullNameEn = '';
+
+  if (isShukla) {
+    if (number === 15) {
+      baseNameTa = 'பௌர்ணமி';
+      baseNameEn = 'Pournami';
+      fullNameTa = 'பௌர்ணமி (வளர்பிறை)';
+      fullNameEn = 'Pournami (Full Moon)';
+    } else {
+      const item = TITHI_BASE_NAMES[number - 1];
+      baseNameTa = item.nameTa;
+      baseNameEn = item.nameEn;
+      fullNameTa = `வளர்பிறை ${item.nameTa}`;
+      fullNameEn = `Shukla ${item.nameEn}`;
+    }
+  } else {
+    if (number === 15) {
+      baseNameTa = 'அமாவாசை';
+      baseNameEn = 'Amavasai';
+      fullNameTa = 'அமாவாசை (தேய்பிறை)';
+      fullNameEn = 'Amavasya (New Moon)';
+    } else {
+      const item = TITHI_BASE_NAMES[number - 1];
+      baseNameTa = item.nameTa;
+      baseNameEn = item.nameEn;
+      fullNameTa = `தேய்பிறை ${item.nameTa}`;
+      fullNameEn = `Krishna ${item.nameEn}`;
+    }
+  }
+
+  const pakshaTa = isShukla ? 'வளர்பிறை (சுக்ல பக்ஷம்)' : 'தேய்பிறை (கிருஷ்ண பக்ஷம்)';
+  const pakshaEn = isShukla ? 'Shukla Paksha (Waxing)' : 'Krishna Paksha (Waning)';
+
+  return {
+    index: tithiIndex, // 0..29
+    number, // 1..15
+    isShukla,
+    pakshaTa,
+    pakshaEn,
+    baseNameTa,
+    baseNameEn,
+    fullNameTa,
+    fullNameEn,
+    progressInTithi,
+    is4_8_14: [4, 8, 14].includes(number),
+    isThuvadasi: number === 12,
+    isAmavasai: tithiIndex === 29,
+    isPournami: tithiIndex === 14
+  };
+}
 
 export const MOVABLE_KARANAS = [
   { name: "பவம் (Bava)", lord: "சூரியன்", animal: "சிங்கம்" },
@@ -585,8 +649,10 @@ export function calculatePanchangamFromBirthDetails(dob, tob, cityKeyOrName = 't
   const yogaIndex = Math.floor(yogaDeg / degPerStar);
   const yogam = NITYA_YOGAS[yogaIndex % 27];
 
-  // Karanam (Moon - Sun)
+  // Tithi & Karanam (Moon - Sun)
   const diff = norm360(moonGraha.totalLon - sunGraha.totalLon);
+  const tithi = calculateTithiFromDiff(diff);
+
   const karanaIndex = Math.floor(diff / 6);
   let karanam = null;
   if (karanaIndex === 0) {
@@ -643,6 +709,12 @@ export function calculatePanchangamFromBirthDetails(dob, tob, cityKeyOrName = 't
     charaKarakasMap,
     rasiPlanetsMap,
     navamsamPlanetsMap,
+    tithi,
+    tithiIndex: tithi.index,
+    tithiNumber: tithi.number,
+    tithiNameTa: tithi.fullNameTa,
+    tithiNameEn: tithi.fullNameEn,
+    isShukla: tithi.isShukla,
     yogam: {
       id: yogam.id,
       nameTa: yogam.name,

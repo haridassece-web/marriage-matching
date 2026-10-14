@@ -1,10 +1,12 @@
 import React from 'react';
-import { ShieldAlert, ShieldCheck, CheckCircle2, AlertTriangle, Info, BookOpen, Sparkles, Award } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, CheckCircle2, AlertTriangle, Info, BookOpen, Sparkles, Award, Moon, Compass } from 'lucide-react';
 import { evaluateSpecialMarriageRules } from '../../rules/jathagam/specialRulesEngine';
+import { evaluateAllThithiAndMudakkuRules } from '../../rules/jathagam/thithiRules';
 
 export default function SpecialRulesReport({ bride, groom, lang }) {
   const result = evaluateSpecialMarriageRules(bride, groom);
   const { vainasikaAnalysis, maturityAnalysis, yoni8thHouse, marsStarMandatory, sunStand48Days, thirdLordStarRule } = result;
+  const thithiResult = evaluateAllThithiAndMudakkuRules(bride, groom);
 
   return (
     <div className="bg-slate-900/90 border border-amber-500/20 rounded-3xl p-6 shadow-xl space-y-6">
@@ -173,6 +175,148 @@ export default function SpecialRulesReport({ bride, groom, lang }) {
         </p>
       </div>
 
+      {/* Section 6: சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள் (Classical 4 Tithi & Mudakku Rules) */}
+      <div className="bg-slate-950 border border-amber-500/30 rounded-2xl p-5 space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400">
+              <Moon className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <span>6. {lang === 'ta' ? 'சுவடி சாஸ்திர 4 திதி & முடக்கு விதிகள்' : '4 Classical Tithi & Mudakku Manuscript Rules'}</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono font-bold">
+                  சுவடி சாஸ்திரம்
+                </span>
+              </h4>
+              <p className="text-[11px] text-slate-400">
+                {lang === 'ta' ? '4-8-14 திதி விலக்கு, ஏக ஜன்ம திதி, பெண் முடக்கு அதிபதி & துவாதசி-அமாவாசை/பௌர்ணமி விதிகள்' : '4-8-14 Riktha, Eka Tithi, Bride Mudakku Lord & Thuvadasi-Amavasya/Pournami Rules'}
+              </p>
+            </div>
+          </div>
+
+          <span className={`px-3 py-1 rounded-full text-xs font-bold border shrink-0 ${
+            thithiResult.criticalCount > 0
+              ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+              : thithiResult.warningCount > 0
+              ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+              : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+          }`}>
+            {thithiResult.criticalCount > 0
+              ? (lang === 'ta' ? '🛑 சுவடி விதி விலக்கு' : '🛑 Critical Obstacle')
+              : thithiResult.warningCount > 0
+              ? (lang === 'ta' ? '⚠️ கவன எச்சரிக்கை' : '⚠️ Warning')
+              : (lang === 'ta' ? '✅ சுவடி விதிகள் உத்தமம்' : '✅ Auspicious')}
+          </span>
+        </div>
+
+        {/* 4 Detailed Cards for the 4 Rules */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          
+          {/* Rule 1 Card: 4, 8, 14 Tithi */}
+          <div className={`p-3.5 rounded-xl border space-y-2 ${
+            thithiResult.rule1_rikthaTithi4_8_14.status === 'CRITICAL'
+              ? 'bg-rose-950/20 border-rose-500/40 text-rose-200'
+              : 'bg-slate-900 border-slate-800 text-slate-200'
+          }`}>
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-amber-300">1. 4, 8, 14 திதி சரிக்கைக் கூடாது</span>
+              <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md border ${
+                thithiResult.rule1_rikthaTithi4_8_14.status === 'CRITICAL'
+                  ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                  : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+              }`}>
+                {thithiResult.rule1_rikthaTithi4_8_14.status === 'CRITICAL' ? '🛑 சரிக்கைக் கூடாது' : '✅ உத்தமம்'}
+              </span>
+            </div>
+            <div className="text-[11px] text-slate-400 font-mono">
+              பெண்: <strong className="text-amber-200">{thithiResult.rule1_rikthaTithi4_8_14.bTithi.fullNameTa}</strong> | ஆண்: <strong className="text-amber-200">{thithiResult.rule1_rikthaTithi4_8_14.gTithi.fullNameTa}</strong>
+            </div>
+            <p className="text-[11px] leading-relaxed text-slate-300">
+              {lang === 'ta' ? thithiResult.rule1_rikthaTithi4_8_14.explanationTa : thithiResult.rule1_rikthaTithi4_8_14.explanationEn}
+            </p>
+          </div>
+
+          {/* Rule 2 Card: Same Janma Tithi */}
+          <div className={`p-3.5 rounded-xl border space-y-2 ${
+            thithiResult.rule2_sameJanmaTithi.status === 'CRITICAL'
+              ? 'bg-rose-950/20 border-rose-500/40 text-rose-200'
+              : thithiResult.rule2_sameJanmaTithi.status === 'WARN'
+              ? 'bg-amber-950/20 border-amber-500/40 text-amber-200'
+              : 'bg-slate-900 border-slate-800 text-slate-200'
+          }`}>
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-amber-300">2. இருவருக்கும் ஒரே ஜன்ம திதி கூடாது</span>
+              <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md border ${
+                thithiResult.rule2_sameJanmaTithi.status === 'CRITICAL'
+                  ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                  : thithiResult.rule2_sameJanmaTithi.status === 'WARN'
+                  ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+                  : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+              }`}>
+                {thithiResult.rule2_sameJanmaTithi.status === 'CRITICAL' ? '🛑 ஏக திதி தோஷம்' :
+                 thithiResult.rule2_sameJanmaTithi.status === 'WARN' ? '⚠️ ஒரே திதி எண்' : '✅ உத்தமம்'}
+              </span>
+            </div>
+            <div className="text-[11px] text-slate-400 font-mono">
+              பெண்: <strong className="text-amber-200">{thithiResult.rule2_sameJanmaTithi.bTithi.fullNameTa}</strong> | ஆண்: <strong className="text-amber-200">{thithiResult.rule2_sameJanmaTithi.gTithi.fullNameTa}</strong>
+            </div>
+            <p className="text-[11px] leading-relaxed text-slate-300">
+              {lang === 'ta' ? thithiResult.rule2_sameJanmaTithi.explanationTa : thithiResult.rule2_sameJanmaTithi.explanationEn}
+            </p>
+          </div>
+
+          {/* Rule 3 Card: Bride Mudakku Lord in Groom Rasi/Lagna */}
+          <div className={`p-3.5 rounded-xl border space-y-2 ${
+            thithiResult.rule3_girlMudakkuInBoyRasiLagna.status === 'CRITICAL'
+              ? 'bg-rose-950/20 border-rose-500/40 text-rose-200'
+              : 'bg-slate-900 border-slate-800 text-slate-200'
+          }`}>
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-amber-300">3. பெண் முடக்கு அதிபதி ஆண் ராசி/லக்னம் கூடாது</span>
+              <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md border ${
+                thithiResult.rule3_girlMudakkuInBoyRasiLagna.status === 'CRITICAL'
+                  ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                  : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+              }`}>
+                {thithiResult.rule3_girlMudakkuInBoyRasiLagna.status === 'CRITICAL' ? '🛑 முடக்கு தோஷம்' : '✅ உத்தமம்'}
+              </span>
+            </div>
+            <div className="text-[11px] text-slate-400 font-mono">
+              பெண் முடக்கு அதிபதி: <strong className="text-rose-300">{thithiResult.rule3_girlMudakkuInBoyRasiLagna.bMudakku?.mudakkuLordTa}</strong> ({thithiResult.rule3_girlMudakkuInBoyRasiLagna.bMudakku?.mudakkuRasiNameTa})
+            </div>
+            <p className="text-[11px] leading-relaxed text-slate-300">
+              {lang === 'ta' ? thithiResult.rule3_girlMudakkuInBoyRasiLagna.explanationTa : thithiResult.rule3_girlMudakkuInBoyRasiLagna.explanationEn}
+            </p>
+          </div>
+
+          {/* Rule 4 Card: Bride Thuvadasi vs Groom Amavasai/Pournami */}
+          <div className={`p-3.5 rounded-xl border space-y-2 ${
+            thithiResult.rule4_girlThuvadasiBoyAmavasaiPournami.status === 'CRITICAL'
+              ? 'bg-rose-950/20 border-rose-500/40 text-rose-200'
+              : 'bg-slate-900 border-slate-800 text-slate-200'
+          }`}>
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-amber-300">4. பெண் துவாதசி - ஆண் அமாவாசை/பௌர்ணமி கூடாது</span>
+              <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md border ${
+                thithiResult.rule4_girlThuvadasiBoyAmavasaiPournami.status === 'CRITICAL'
+                  ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                  : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+              }`}>
+                {thithiResult.rule4_girlThuvadasiBoyAmavasaiPournami.status === 'CRITICAL' ? '🛑 விலக்கு (தோஷம்)' : '✅ உத்தமம்'}
+              </span>
+            </div>
+            <div className="text-[11px] text-slate-400 font-mono">
+              பெண் திதி: <strong className="text-amber-200">{thithiResult.rule4_girlThuvadasiBoyAmavasaiPournami.bTithi.fullNameTa}</strong> | ஆண் திதி: <strong className="text-amber-200">{thithiResult.rule4_girlThuvadasiBoyAmavasaiPournami.gTithi.fullNameTa}</strong>
+            </div>
+            <p className="text-[11px] leading-relaxed text-slate-300">
+              {lang === 'ta' ? thithiResult.rule4_girlThuvadasiBoyAmavasaiPournami.explanationTa : thithiResult.rule4_girlThuvadasiBoyAmavasaiPournami.explanationEn}
+            </p>
+          </div>
+
+        </div>
+      </div>
+
       {/* Astrological Notes Box */}
       <div className="bg-amber-950/30 border border-amber-500/30 rounded-2xl p-4 text-xs space-y-2 text-amber-200/90">
         <div className="font-bold text-amber-400 flex items-center gap-2">
@@ -180,6 +324,10 @@ export default function SpecialRulesReport({ bride, groom, lang }) {
           <span>{lang === 'ta' ? 'சுவடி சாஸ்திர குறிப்புகள் (Manuscript Rules):' : 'Manuscript Rules:'}</span>
         </div>
         <ul className="list-disc list-inside space-y-1 text-slate-300 text-[11px] leading-relaxed">
+          <li><strong>4, 8, 14 திதி சரிக்கைக் கூடாது:</strong> 4 (சதுர்த்தி), 8 (அஷ்டமி), 14 (சதுர்தசி) ஆகிய உக்கிர ரிக்தா திதிகளில் பிறந்த ஆணுக்கோ பெண்ணுக்கோ பொருத்தம் சரிக்கைக் கூடாது (திருமணம் தவிர்க்கப்பட வேண்டும்).</li>
+          <li><strong>ஏக ஜன்ம திதி விலக்கு:</strong> ஆண் மற்றும் பெண் இருவருக்கும் ஒரே ஜன்ம திதி இருக்கக்கூடாது (ஏக திதி தோஷம்). ஒரே திதி அமைந்தால் வம்ச விருத்தி, தம்பதியர் ஒற்றுமை குறையும் என்பதால் தவிர்க்கப்பட வேண்டும்.</li>
+          <li><strong>பெண் முடக்கு அதிபதி ஆண் ராசி/லக்னம் விலக்கு:</strong> பெண்ணின் முடக்கு அதிபதி கிரகமானது ஆணின் சந்திர ராசியிலோ அல்லது லக்கினத்திலோ அமரக்கூடாது, மற்றும் ஆணின் ராசி நாதனாகவோ லக்ன நாதனாகவோ வரக்கூடாது. இது ஆணின் வாழ்வாதாரத்தை முடக்கும்.</li>
+          <li><strong>பெண் துவாதசி - ஆண் அமாவாசை/பௌர்ணமி விலக்கு:</strong> துவாதசி (12-வது திதி) திதியில் பிறந்த பெண்ணிற்கு, அமாவாசை அல்லது பௌர்ணமி திதியில் பிறந்த ஆணைத் திருமணம் செய்யக்கூடாது.</li>
           <li><strong>8-ம் பாவக கிரக யோனி விதிகள்:</strong>
             <ul className="list-circle list-inside ml-4 space-y-0.5 text-slate-400 text-[10.5px]">
               <li>☀️ <strong>சூரிய யோனி:</strong> புதன், சுக்கிரன் இணக்கம் உத்தமம்.</li>

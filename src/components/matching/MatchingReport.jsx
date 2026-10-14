@@ -100,6 +100,11 @@ export default function MatchingReport({ matchingData, lang, onPrint }) {
                 <td className="border border-slate-300 p-2 font-bold text-amber-900">{brideNak.nameTa} ({bride.pada}-ஆம் பாதம்)</td>
                 <td className="border border-slate-300 p-2 font-bold text-amber-900">{groomNak.nameTa} ({groom.pada}-ஆம் பாதம்)</td>
               </tr>
+              <tr className="bg-amber-50/40">
+                <td className="border border-slate-300 p-2 font-bold text-amber-900">திதி (Janma Tithi)</td>
+                <td className="border border-slate-300 p-2 font-bold text-cyan-900">{bride.tithi?.fullNameTa || bride.tithiNameTa || 'சுப திதி'}</td>
+                <td className="border border-slate-300 p-2 font-bold text-cyan-900">{groom.tithi?.fullNameTa || groom.tithiNameTa || 'சுப திதி'}</td>
+              </tr>
               <tr className="bg-slate-50">
                 <td className="border border-slate-300 p-2 font-semibold">யோகம் (Yogam)</td>
                 <td className="border border-slate-300 p-2">{bride.yogamNameTa || 'சுப யோகம்'}</td>
@@ -224,11 +229,11 @@ export default function MatchingReport({ matchingData, lang, onPrint }) {
           </table>
         </div>
 
-        {/* Section 5: திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள் (6 Essence Manuscript Rules) */}
+        {/* Section 5: திருமண பொருத்தத்தின் சாராம்ச & திதி விதிகள் (Palm-Leaf Manuscript Rules) */}
         {saaraamsaResult && (
           <div className="mb-6">
             <h2 className="text-sm font-bold text-amber-900 border-b border-amber-300 pb-1 mb-3 uppercase tracking-wider flex items-center justify-between">
-              <span>{lang === 'ta' ? '5. திருமண பொருத்தத்தின் 6 சாராம்ச விதிகள் (ஓலைச்சுவடி சாஸ்திரம்)' : '5. 6 Essence Rules of Marriage Matching (Palm-Leaf Manuscript)'}</span>
+              <span>{lang === 'ta' ? `5. திருமண பொருத்தத்தின் ${saaraamsaResult.totalRules || 10} சாராம்ச & திதி விதிகள் (ஓலைச்சுவடி சாஸ்திரம்)` : `5. ${saaraamsaResult.totalRules || 10} Essence & Tithi Rules of Marriage Matching (Palm-Leaf Manuscript)`}</span>
               <span className="text-xs font-mono font-bold text-amber-800">
                 {saaraamsaResult.passedCount} / {saaraamsaResult.totalRules} {lang === 'ta' ? 'சுபம்' : 'Passed'} ({saaraamsaResult.scorePercent}%)
               </span>

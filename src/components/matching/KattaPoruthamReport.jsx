@@ -102,6 +102,26 @@ export default function KattaPoruthamReport({ bride, groom, lang }) {
         <p className="text-xs text-slate-300 leading-relaxed bg-amber-950/20 p-3 rounded-xl border border-amber-500/20">
           {lang === 'ta' ? mudakkuResult.explanationTa : mudakkuResult.explanationEn}
         </p>
+
+        {/* Specific Rule: Girl Mudakku Lord in Boy Rasi/Lagna Check */}
+        {mudakkuResult.girlMudakkuInBoyCheck && (
+          <div className={`p-3 rounded-xl border text-xs flex items-center justify-between gap-3 ${
+            mudakkuResult.girlMudakkuInBoyCheck.hasConflict
+              ? 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+              : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+          }`}>
+            <span className="font-semibold">
+              {lang === 'ta' 
+                ? 'சுவடி சாஸ்திர விதி: பெண் முடக்கு அதிபதி ஆண் ஜாதகத்தில் ராசி & லக்கினத்தில் வரக்கூடாது' 
+                : 'Manuscript Rule: Bride Mudakku Lord must not be in Groom Rasi or Lagna'}
+            </span>
+            <span className="font-bold shrink-0">
+              {mudakkuResult.girlMudakkuInBoyCheck.hasConflict
+                ? (lang === 'ta' ? '🛑 விலக்கு (தோஷம்)' : '🛑 Conflict')
+                : (lang === 'ta' ? '✅ சுபம் (இல்லை)' : '✅ Auspicious')}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Grid Section 2: Badhaka Analysis */}
