@@ -124,8 +124,8 @@ export function evaluateSpecialMarriageRules(bride, groom) {
     const g3rdLordGraha = groom.allGrahas.find(g => g.code === lordCodeMap[g3rdLordId]);
     if (g3rdLordGraha && g3rdLordGraha.starNakshatra) {
       g3rdLordStarId = g3rdLordGraha.starNakshatra.id;
-      g3rdLordStarName = g3rdLordGraha.starNakshatra.name;
-      g3rdLordStarLord = g3rdLordGraha.starNakshatra.lord;
+      g3rdLordStarName = g3rdLordGraha.starNakshatra.nameTa || g3rdLordGraha.starNakshatra.name || '';
+      g3rdLordStarLord = g3rdLordGraha.starNakshatra.lordTa || g3rdLordGraha.starNakshatra.lord || '';
     }
   }
 
