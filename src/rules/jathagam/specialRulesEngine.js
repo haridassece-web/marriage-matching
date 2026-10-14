@@ -201,10 +201,10 @@ export function evaluateSpecialMarriageRules(bride, groom) {
       isNeutralizedAndGood,
       isOverallGood,
       explanationTa: isDirectGood
-        ? `✅ ஆணின் 3-ம் அதிபதி (${g3rdLordName}) Ali karagam புதன், சனி, கேது அல்லாத சுப சாரத்தில் உள்ளார் (உத்தம பொருத்தம்).`
+        ? `✅ உத்தம சுப யோகம்! ஆணின் 3-ம் பாவக அதிபதி (${g3rdLordName}) Ali karagam புதன், சனி, கேது அல்லாத சுப சாரத்தில் உள்ளார் (${g3rdLordStarName || 'சுப சாரம்'}).`
         : isNeutralizedAndGood
-        ? `✅ தோஷம் நிவர்த்தி (உத்தம சுப யோகம்)! ஆணின் 3-ம் பாவக அதிபதி (${g3rdLordName}) Ali karagam endru solla kudai நட்சத்திர புதன், சனி, கேது சாரங்களில் அமைந்தாலும், புதன், சனி, கேது karagal poi suzai சாரம் புதன்/சனி/கேது அமைப்பில் இல்லாமல் வேறுபட்டால் தோஷம் நிவர்த்தியாகி உத்தம சுப யோகம் தரும்.`
-        : `⚠️ ஒரே நட்சத்திர சார தோஷ எச்சரிக்கை! ஆணின் 3-ம் பாவக அதிபதியும் பெண்ணின் நட்சத்திர சாரமும் ஒரே புதன்/சனி/கேது (Ali karagam) அமைப்பில் (எ.கா: இருவருக்கும் புதன்-புதன் / சனி-சனி / கேது-கேது) உள்ளதால் சுப பலன் குறைய வாய்ப்புள்ளது.`,
+        ? `✅ தோஷம் நிவர்த்தி (உத்தம சுப யோகம்)! ஆணின் 3-ம் பாவக அதிபதி (${g3rdLordName}) Ali karagam endru solla kudai நட்சத்திர புதன், சனி, கேது சாரங்களில் அமைந்தாலும், புதன், சனி, கேது karagamgal poi suzai சாரம் புதன்/சனி/கேது அமைப்பில் இல்லாமல் வேறுபட்டால் தோஷம் நிவர்த்தியாகி உத்தம சுப யோகம் தரும்.`
+        : `⚠️ Ali Karagam சார தோஷ எச்சரிக்கை! ஆணின் 3-ம் பாவக அதிபதி (${g3rdLordName}) Ali karagam endru solla kudai நட்சத்திர புதன், சனி, கேது சாரங்களில் இருக்கக் கூடாது. அவ்வாறு இருந்தால் புதன், சனி, கேது karagamgal poi suzai சாரம் புதன்/சனி/கேது அமைப்பில் வேறுபடாமல் ஒரே அமைப்பில் அமைவதால் தோஷம் நிவர்த்தியாகவில்லை.`,
       explanationEn: isDirectGood
         ? `✅ Groom's 3rd Lord (${g3rdLordName}) is in non-Mercury/Saturn/Ketu star (Auspicious).`
         : isNeutralizedAndGood
